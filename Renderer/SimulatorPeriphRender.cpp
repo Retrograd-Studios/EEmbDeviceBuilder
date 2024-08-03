@@ -248,58 +248,37 @@ namespace EEmbSimulator {
 	}
 
 
-    void MB_modbus_t::drawGUI(uint32_t id) {
 
-        if (!this->isShowMenu)
+    void MB_modbus_t::refresh()
+    {
+        if (portList.size())
         {
-            return;
+            portList.pop_back();
+        }
+    }
+
+
+		bool MB_modbus_t::isOpened()
+        {
+            return this->modbusInstance->isReady;
+        }
+
+		void MB_modbus_t::tryOpen()
+        {
+            this->modbusInstance->isReady = 1;
+        }
+
+		void MB_modbus_t::close()
+        {
+            this->modbusInstance->isReady = 0;
         }
 
 
-
-        float w = 150;
-        float h = 250;
-
-        float x = target.pos.x;
-        float y = target.pos.y + 40;
-
-        if ((x + w) > SCR_WIDTH)
-        {
-            x = SCR_WIDTH - w;
-        }
-
-        if ((y + h) > SCR_HEIGHT)
-        {
-            y = SCR_HEIGHT - h;
-        }
+    void MB_modbus_t::drawGUI() {
 
 
-        //static int portCount = 0;
 
-        if (nk_begin(ctx, title.c_str(),
-            nk_rect(x, y, w, h),
-            NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_CLOSABLE))
-        {
-            //nk_layout_row_dynamic(ctx, 25, 1);
-            //nk_label(ctx, "COM_1: ", NK_TEXT_LEFT);
-            nk_layout_row_dynamic(ctx, 25, 2);
-            nk_label(ctx, "Port: ", NK_TEXT_LEFT);
-            if (portCount)
-            {
-                selectedPort = nk_combo(ctx, portList, portCount, selectedPort, 25, { 75, 25 * 4 });
-            }
-            else
-            {
-                nk_label(ctx, "no ports", NK_TEXT_LEFT);
-            }
-
-            nk_layout_row_dynamic(ctx, 25, 1);
-            if (nk_button_label(ctx, "refresh"))
-            {
-                refresh();
-            }
-
-            MBL_modbus_t* uart = getUartInstance();
+        auto& uart = this->modbusInstance; 
 
             static std::string parities[] = {
                 "no parity",
@@ -312,6 +291,144 @@ namespace EEmbSimulator {
                 "two"
             };
 
+
+
+		if (selectedElement.get() == this)
+        {
+                static uint32_t wX =  WINDOW_WIDTH-300;
+                static uint32_t wY =  320;
+
+				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
+                             nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
+                {
+
+                    nk_layout_row_dynamic(ctx, 25, 1);
+
+                    //nk_label(ctx, "PORT NUM: ", NK_TEXT_LEFT);
+                    nk_property_int(ctx, "Physical port num: ", 0, (int32_t*)&this->periphPortNum, 0xFFFFFF, 1, 1.f);
+
+
+                    //nk_label(ctx, "baudrate: ", NK_TEXT_LEFT);
+                    nk_property_int(ctx, "baudrate: ", 0, (int32_t*)&uart->baudRate, 0xFFFFFF, 1, 1.f);
+
+
+                    nk_label(ctx, "parities: ", NK_TEXT_LEFT);
+                    if (nk_combo_begin_label(ctx, parities[uart->parity].c_str(), nk_vec2(nk_widget_width(ctx), 80)))
+					{
+						nk_layout_row_dynamic(ctx, 25, 1);
+						for (auto i = 0; i < parities->size(); ++i)
+						{
+							if (nk_combo_item_label(ctx, parities[i].c_str(), NK_TEXT_ALIGN_CENTERED))
+							{
+								uart->parity = i;
+							}
+						}
+						nk_combo_end(ctx);
+					}
+
+                    nk_label(ctx, "stopBits: ", NK_TEXT_LEFT);
+                    if (nk_combo_begin_label(ctx, stopBits[uart->stopBits].c_str(), nk_vec2(nk_widget_width(ctx), 80)))
+					{
+						nk_layout_row_dynamic(ctx, 25, 1);
+						for (auto i = 0; i < parities->size(); ++i)
+						{
+							if (nk_combo_item_label(ctx, stopBits[i].c_str(), NK_TEXT_ALIGN_CENTERED))
+							{
+								uart->stopBits = i;
+							}
+						}
+						nk_combo_end(ctx);
+					}
+
+
+                    nk_layout_row_dynamic(ctx, 25, 2);
+                    if (nk_button_label(ctx, "Add to List"))
+                    {
+                        for (auto i = 0; i < 5; ++i)
+                        {
+                            portList.push_back("COM"+std::to_string(i+1));
+                        }
+                        portList.push_back("Bluetooth-RS-{0x00ff0023-0x13446622-0x56778899-0x00223311}");
+                    }
+
+                    if (nk_button_label(ctx, "Clear List"))
+                    {
+                        this->portList.clear();
+                        this->selectedPort = 0;
+                    }
+
+                }
+                auto bounds = nk_window_get_bounds(ctx);
+                wX = bounds.x;
+                wY = bounds.y;
+                nk_end(ctx);
+        }
+
+
+		if (!this->isShowMenu)
+        {
+            return;
+        }
+
+        float w = this->hudRect.w != 0 ?  this->hudRect.w : 160;
+        float h = this->hudRect.h != 0 ?  this->hudRect.h : 130;
+
+        auto x = this->hudRect.x == 0 ?  this->targetRect.x + 40 : this->hudRect.x;
+        auto y = this->hudRect.y == 0 ?  this->targetRect.y + 40 : this->hudRect.y;
+
+        if ((x + w) > WINDOW_WIDTH)
+        {
+            x = WINDOW_WIDTH - w;
+        }
+
+        if ((y + h) > WINDOW_HEIGHT)
+        {
+            y = WINDOW_HEIGHT - h;
+        }
+        
+		
+		if (this->label.empty() || this->label == "RS-485_COM")
+		{
+			this->label = "RS-485_COM";
+			this->isShowMenu = false;
+			return;
+		}
+
+        if (nk_begin_titled(ctx, std::to_string((uint64_t)this->label.c_str()).c_str(), this->label.c_str(),
+            nk_rect(x, y, w, h),
+            /*NK_WINDOW_NO_SCROLLBAR |*/ NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_CLOSABLE | NK_WINDOW_PRIVATE))
+        {
+            
+            nk_layout_row_dynamic(ctx, 25, 2);
+            nk_label(ctx, "Port: ", NK_TEXT_LEFT);
+            if (this->portList.size())
+            {
+                    nk_layout_row_dynamic(ctx, 25, 1);
+                    if (nk_combo_begin_label(ctx, this->portList[this->selectedPort].c_str(), nk_vec2(nk_widget_width(ctx), 80)))
+					{
+						nk_layout_row_dynamic(ctx, 25, 1);
+						for (auto i = 0; i < this->portList.size(); ++i)
+						{
+							if (nk_combo_item_label(ctx, this->portList[i].c_str(), NK_TEXT_ALIGN_CENTERED))
+							{
+								this->selectedPort = i;
+							}
+						}
+						nk_combo_end(ctx);
+					}
+            }
+            else
+            {
+                nk_label(ctx, "no ports", NK_TEXT_LEFT);
+            }
+
+            nk_layout_row_dynamic(ctx, 25, 1);
+            if (nk_button_label(ctx, "refresh"))
+            {
+                refresh();
+            }
+
+            
             nk_layout_row_dynamic(ctx, 25, 2);
             nk_label(ctx, "baudrate: ", NK_TEXT_LEFT);
             nk_label(ctx, std::to_string(uart->baudRate).c_str(), NK_TEXT_LEFT);
@@ -348,7 +465,7 @@ namespace EEmbSimulator {
                 nk_label(ctx, "closed", NK_TEXT_LEFT);
                 nk_layout_space_end(ctx);
                 nk_layout_row_dynamic(ctx, 25, 1);
-                if (portCount)
+                if (portList.size())
                 if (nk_button_label(ctx, "open"))
                 {
                     tryOpen();
@@ -360,95 +477,102 @@ namespace EEmbSimulator {
         {
             this->isShowMenu = false;
         }
+        auto bounds = nk_window_get_bounds(ctx);
+		this->hudRect.x = bounds.x;
+		this->hudRect.y = bounds.y;
+		this->hudRect.w = bounds.w;
+		this->hudRect.h = bounds.h;
+
         nk_end(ctx);
+
     }
 
 
 
-    void MB_aoutput_t::drawGUI(uint32_t id) {
-        if (!this->isShowMenu)
-        {
-            return;
-        }
+    // void MB_aoutput_t::drawGUI(uint32_t id) {
+    //     if (!this->isShowMenu)
+    //     {
+    //         return;
+    //     }
 
-        Targets& target = targets[id];
+    //     Targets& target = targets[id];
 
-        std::string title = labels[id] + " info: ";
+    //     std::string title = labels[id] + " info: ";
 
-        float w = 150;
-        float h = 75;
+    //     float w = 150;
+    //     float h = 75;
 
-        float x = target.pos.x;
-        float y = target.pos.y + 40;
+    //     float x = target.pos.x;
+    //     float y = target.pos.y + 40;
 
-        if ((x + w) > SCR_WIDTH)
-        {
-            x = SCR_WIDTH - w;
-        }
+    //     if ((x + w) > SCR_WIDTH)
+    //     {
+    //         x = SCR_WIDTH - w;
+    //     }
 
-        if ((y + h) > SCR_HEIGHT)
-        {
-            y = SCR_HEIGHT - h;
-        }
+    //     if ((y + h) > SCR_HEIGHT)
+    //     {
+    //         y = SCR_HEIGHT - h;
+    //     }
 
-        this->output = (float) this->value / 1000.f;
+    //     this->output = (float) this->value / 1000.f;
 
-        if (nk_begin(ctx, title.c_str(),
-            nk_rect(x, y, w, h),
-            NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_CLOSABLE))
-        {
-            nk_layout_row_dynamic(ctx, 25, 1);
-            nk_labelf(ctx, NK_TEXT_LEFT, "Output: %.3f V", this->output);
-        }
-        else
-        {
-            this->isShowMenu = false;
-        }
-        nk_end(ctx);
-    }
-    void MB_doutput_t::drawGUI(uint32_t id) {
+    //     if (nk_begin(ctx, title.c_str(),
+    //         nk_rect(x, y, w, h),
+    //         NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_CLOSABLE))
+    //     {
+    //         nk_layout_row_dynamic(ctx, 25, 1);
+    //         nk_labelf(ctx, NK_TEXT_LEFT, "Output: %.3f V", this->output);
+    //     }
+    //     else
+    //     {
+    //         this->isShowMenu = false;
+    //     }
+    //     nk_end(ctx);
+    // }
+    // void MB_doutput_t::drawGUI(uint32_t id) {
 
-        if (!this->isShowMenu)
-        {
-            return;
-        }
+    //     if (!this->isShowMenu)
+    //     {
+    //         return;
+    //     }
 
-        Targets& target = targets[id];
+    //     Targets& target = targets[id];
 
-        std::string title = labels[id] + " info: ";
+    //     std::string title = labels[id] + " info: ";
 
-        float w = 150;
-        float h = 75;
+    //     float w = 150;
+    //     float h = 75;
 
-        float x = target.pos.x;
-        float y = target.pos.y + 40;
+    //     float x = target.pos.x;
+    //     float y = target.pos.y + 40;
 
-        if ((x + w) > SCR_WIDTH)
-        {
-            x = SCR_WIDTH - w;
-        }
+    //     if ((x + w) > SCR_WIDTH)
+    //     {
+    //         x = SCR_WIDTH - w;
+    //     }
 
-        if ((y + h) > SCR_HEIGHT)
-        {
-            y = SCR_HEIGHT - h;
-        }
+    //     if ((y + h) > SCR_HEIGHT)
+    //     {
+    //         y = SCR_HEIGHT - h;
+    //     }
 
 
-        if (nk_begin(ctx, title.c_str(),
-            nk_rect(x, y, w, h),
-            NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_CLOSABLE))
-        {
-            nk_layout_row_dynamic(ctx, 25, 2);
-            nk_label(ctx, "Output: ", NK_TEXT_LEFT);
-            nk_label(ctx, value ? "HIGH" : "LOW", NK_TEXT_LEFT);
+    //     if (nk_begin(ctx, title.c_str(),
+    //         nk_rect(x, y, w, h),
+    //         NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_CLOSABLE))
+    //     {
+    //         nk_layout_row_dynamic(ctx, 25, 2);
+    //         nk_label(ctx, "Output: ", NK_TEXT_LEFT);
+    //         nk_label(ctx, value ? "HIGH" : "LOW", NK_TEXT_LEFT);
 
-        }
-        else
-        {
-            this->isShowMenu = false;
-        }
-        nk_end(ctx);
-    }
+    //     }
+    //     else
+    //     {
+    //         this->isShowMenu = false;
+    //     }
+    //     nk_end(ctx);
+    // }
 
 
 

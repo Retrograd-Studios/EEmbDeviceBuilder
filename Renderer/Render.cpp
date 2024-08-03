@@ -132,45 +132,7 @@ namespace EEmbSimulator
         EEMB_PERIPH_ID_COUNT
     };
 
-    // std::vector<Targets> targets = {
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(422.0f, 296.0f), glm::vec2(40.0f, 40.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(534.0f, 296.0f), glm::vec2(40.0f, 40.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(480.0f, 340.0f), glm::vec2(40.0f, 40.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(480.0f, 250.0f), glm::vec2(40.0f, 40.0f) },
-
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(423.0f, 208.0f), glm::vec2(40.0f, 40.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(534.0f, 206.0f), glm::vec2(40.0f, 40.0f) },
-
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(189.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(216.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(244.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(271.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(347.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(375.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(402.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(429.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(456.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(484.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(511.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(51.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     //{ glm::mat4(1.f), glm::vec4(1.f), glm::vec2(80.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(135.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-    //     //{ glm::mat4(1.f), glm::vec4(1.f), glm::vec2(162.0f, 71.0f), glm::vec2(20.0f, 20.0f) },
-
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(484.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(512.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(539.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(107.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(161.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(217.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(271.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(375.0f, 475.0f), glm::vec2(20.0f, 20.0f) },
-    //     { glm::mat4(1.f), glm::vec4(1.f), glm::vec2(429.0f, 475.0f), glm::vec2(20.0f, 20.0f) }
-    // };
-
-    // Targets* currentTarget = nullptr;
+    
 
     std::shared_ptr<EEmbPeriph> hoverElement = nullptr;
     std::shared_ptr<EEmbPeriph> selectedElement = nullptr;
@@ -186,7 +148,9 @@ namespace EEmbSimulator
 
     std::vector<std::string> typeList({"NONE",
                                        "IMG",
-                                       "UI"});
+                                       "UI",
+                                       "RS-485"
+    });
 
 
     
@@ -559,6 +523,12 @@ namespace EEmbSimulator
                     else if (newElementType == PERIPH_TYPE_UI)
                     {
                         newElement = std::make_shared<EEmbUI>();
+                    }
+                    else if (newElementType == PERIPH_TYPE_RS_485)
+                    {
+                        auto newElement0 = std::make_shared<MB_modbus_t>();
+                        newElement0->modbusInstance = std::make_unique<MBL_modbus_t>();
+                        newElement = newElement0;
                     }
 
                     periphs.push_back(newElement);

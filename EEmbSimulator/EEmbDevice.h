@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 
 namespace EEmbSimulator {
@@ -31,6 +32,7 @@ namespace EEmbSimulator {
 		PERIPH_TYPE_NONE = 0,
 		PERIPH_TYPE_IMG,
 		PERIPH_TYPE_UI,
+		PERIPH_TYPE_RS_485
 
 	};
 
@@ -94,6 +96,8 @@ namespace EEmbSimulator {
 		uint32_t maxTryCount;
 		//uint32_t errorsFlags;
 
+		MBL_modbus_t() :  isReady(0), parity(0), stopBits(0), modbusAddr(0), baudRate(9600) {}
+
 		volatile uint8_t isReady;
         volatile uint8_t isBusy;
 	};
@@ -141,13 +145,16 @@ namespace EEmbSimulator {
 
 	struct MB_modbus_t : EEmbPeriph {
 		std::vector<std::string> portList;
-		uint32_t selectedPort;
-		uint8_t periphPortNum;
+		uint32_t selectedPort = 0;
+		uint32_t periphPortNum = 0;
 		void refresh();
 		bool isOpened();
 		void tryOpen();
 		void close();
-		MBL_modbus_t* modbusInstance;
+		std::unique_ptr<MBL_modbus_t> modbusInstance;
+		MB_modbus_t() : EEmbPeriph(PERIPH_TYPE_RS_485) {
+			this->targetHoverType = TARGET_HOVER_TYPE_CIRCLE;
+		}
 		virtual void drawGUI() override;
 	};
 
