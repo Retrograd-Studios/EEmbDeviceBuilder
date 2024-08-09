@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <atomic>
 
 
 namespace EEmbSimulator {
@@ -32,8 +33,11 @@ namespace EEmbSimulator {
 		PERIPH_TYPE_NONE = 0,
 		PERIPH_TYPE_IMG,
 		PERIPH_TYPE_UI,
-		PERIPH_TYPE_RS_485
-
+		PERIPH_TYPE_RS_485,
+		PERIPH_TYPE_AO,
+		PERIPH_TYPE_DO,
+		PERIPH_TYPE_LED,
+		PERIPH_TYPE_DISPLAY
 	};
 
 	enum TargetHoverType {
@@ -41,6 +45,12 @@ namespace EEmbSimulator {
 		TARGET_HOVER_TYPE_RECT,
 		TARGET_HOVER_TYPE_CIRCLE
 	};
+
+	enum EEmbDisplayType{
+		EEMB_DISPLAY_TYPE_ST7735 = 0,
+		EEMB_DISPLAY_TYPE_COUNT
+	};
+
 
 
 	struct VEC4 {
@@ -159,14 +169,77 @@ namespace EEmbSimulator {
 	};
 
 
-	struct MB_aoutput_t : EEmbPeriph {
+	struct EEmbAO : EEmbPeriph {
 		float output;
 		uint16_t value;
+		EEmbAO() : EEmbPeriph(PERIPH_TYPE_AO), value(0) {
+			this->targetHoverType = TARGET_HOVER_TYPE_CIRCLE;
+		}
 		virtual void drawGUI() override;
 	};
 
-	struct MB_doutput_t : EEmbPeriph {
+	struct EEmbDO : EEmbPeriph {
 		uint8_t value;
+		EEmbDO() : EEmbPeriph(PERIPH_TYPE_DO), value(0) {
+			this->targetHoverType = TARGET_HOVER_TYPE_CIRCLE;
+		}
+		virtual void drawGUI() override;
+	};
+
+	
+	struct EEmbDisplay : EEmbPeriph {
+		uint32_t width;
+		uint32_t height;
+		uint32_t screenDataWidth;
+		uint32_t screenDataHeight;
+		std::unique_ptr<uint8_t[]> screenData = nullptr;
+		std::atomic<bool> isRedraw;
+		std::atomic<float> currentDisplayBrights;
+		uint32_t screenTexture;
+		EEmbDisplayType displayType = EEmbDisplayType::EEMB_DISPLAY_TYPE_ST7735;
+		EEmbDisplay() : EEmbPeriph(PERIPH_TYPE_DISPLAY), isRedraw(false), currentDisplayBrights(1.f) {
+			this->targetHoverType = TARGET_HOVER_TYPE_RECT;
+			resetSize();
+			rebuildScreen();
+		}
+		void rebuildScreen() {
+
+			screenDataWidth = 1;
+			screenDataHeight = 1;
+			while (screenDataWidth < width)
+			{
+				screenDataWidth *= 2;
+			}
+			while (screenDataHeight < height)
+			{
+				screenDataHeight *= 2;
+			}
+			screenData = std::make_unique<uint8_t[]>(screenDataWidth*screenDataHeight*3);
+			memset(screenData.get(), 0xFF, screenDataWidth*screenDataHeight*3);
+			isRedraw = true;
+		}
+
+		void resetSize() {
+
+			if (displayType == EEMB_DISPLAY_TYPE_ST7735)
+			{
+				width = 160;
+				height = 128;
+			}
+
+		}
+
+
+		virtual void drawGUI() override;
+	};
+
+	struct EEmbLED : EEmbPeriph {
+		uint8_t value;
+		VEC4 colorOn = { 1.0f, 0.0f, 0.0f, 0.8f };
+		VEC4 colorOff = { 0.25f, 0.0f, 0.0f, 0.8f };
+		EEmbLED() : EEmbPeriph(PERIPH_TYPE_LED) {
+			this->targetHoverType = TARGET_HOVER_TYPE_CIRCLE;
+		}
 		virtual void drawGUI() override;
 	};
 }
