@@ -279,6 +279,10 @@ namespace EEmbSimulator
 
         // load textures (we now use a utility function to keep the code more organized)
 
+        addTexture((SimPath + "M72OD20R.png").c_str());
+        addTexture((SimPath + "M72OB20R.png").c_str());
+        addTexture((SimPath + "M72MD13R.png").c_str());
+        addTexture((SimPath + "M72MB13R.png").c_str());
         addTexture((SimPath + "IS20C01D.png").c_str());
         // -----------------------------------------------------------------------------
         // unsigned int texture0 = loadTexture((SimPath + "IS20C01D.png").c_str());
