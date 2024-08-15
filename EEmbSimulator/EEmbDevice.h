@@ -8,6 +8,8 @@
 #include <memory>
 #include <atomic>
 
+#include <nlohmann/json.hpp>
+
 
 namespace EEmbSimulator {
 
@@ -59,6 +61,9 @@ namespace EEmbSimulator {
 		float w;
 		float h;
 	};
+
+	void to_json(nlohmann::json& j, const VEC4& info);
+	void from_json(const nlohmann::json& j, VEC4& info);
 
 
 	struct MBL_modbus_t
@@ -128,6 +133,10 @@ namespace EEmbSimulator {
 		virtual void drawGUI() {}
 	};
 
+	void to_json(nlohmann::json& j, const EEmbPeriph& info);
+	void from_json(const nlohmann::json& j, EEmbPeriph& info);
+
+
 
 	struct EEmbImg : EEmbPeriph {
 		
@@ -138,6 +147,9 @@ namespace EEmbSimulator {
 		}
 		virtual void drawGUI() override;
 	};
+
+	void to_json(nlohmann::json& j, const EEmbImg& info);
+	void from_json(const nlohmann::json& j, EEmbImg& info);
 
 	struct EEmbUI : EEmbPeriph {
 		float rawVal;
@@ -152,6 +164,9 @@ namespace EEmbSimulator {
 		virtual void drawGUI() override;
 	};
 
+	void to_json(nlohmann::json& j, const EEmbUI& info);
+	void from_json(const nlohmann::json& j, EEmbUI& info);
+
 
 	struct MB_modbus_t : EEmbPeriph {
 		std::vector<std::string> portList;
@@ -164,9 +179,27 @@ namespace EEmbSimulator {
 		std::unique_ptr<MBL_modbus_t> modbusInstance;
 		MB_modbus_t() : EEmbPeriph(PERIPH_TYPE_RS_485) {
 			this->targetHoverType = TARGET_HOVER_TYPE_CIRCLE;
+			modbusInstance = std::make_unique<MBL_modbus_t>();
 		}
+
+		MB_modbus_t(const MB_modbus_t& com) : EEmbPeriph(com),  
+			portList(com.portList), selectedPort(com.selectedPort), 
+			modbusInstance(std::make_unique<MBL_modbus_t>()) {}
+
+		MB_modbus_t& operator=(const MB_modbus_t& com)
+		{
+			*static_cast<EEmbPeriph*>(this) = com;
+			this->portList = com.portList;
+			this->selectedPort = com.selectedPort;
+			this->modbusInstance = std::make_unique<MBL_modbus_t>();
+			return *this;
+		}
+
 		virtual void drawGUI() override;
 	};
+
+	void to_json(nlohmann::json& j, const MB_modbus_t& info);
+	void from_json(const nlohmann::json& j, MB_modbus_t& info);
 
 
 	struct EEmbAO : EEmbPeriph {
@@ -178,6 +211,11 @@ namespace EEmbSimulator {
 		virtual void drawGUI() override;
 	};
 
+	void to_json(nlohmann::json& j, const EEmbAO& info);
+	void from_json(const nlohmann::json& j, EEmbAO& info);
+
+
+
 	struct EEmbDO : EEmbPeriph {
 		uint8_t value;
 		EEmbDO() : EEmbPeriph(PERIPH_TYPE_DO), value(0) {
@@ -185,6 +223,9 @@ namespace EEmbSimulator {
 		}
 		virtual void drawGUI() override;
 	};
+
+	void to_json(nlohmann::json& j, const EEmbDO& info);
+	void from_json(const nlohmann::json& j, EEmbDO& info);
 
 	
 	struct EEmbDisplay : EEmbPeriph {
@@ -202,6 +243,45 @@ namespace EEmbSimulator {
 			resetSize();
 			rebuildScreen();
 		}
+
+		EEmbDisplay(const EEmbDisplay& disp) : EEmbPeriph(disp),
+			width(disp.width), height(disp.height),
+			//screenDataWidth(disp.screenDataWidth), screenDataHeight(disp.screenDataHeight),
+			screenData(nullptr),
+			//isRedraw(disp.isRedraw.load()),
+			currentDisplayBrights(disp.currentDisplayBrights.load()),
+			screenTexture(disp.screenTexture) 
+		{
+			//resetSize();
+			rebuildScreen();
+		} 
+
+		EEmbDisplay(const EEmbDisplay&& disp) : EEmbPeriph(disp),
+			width(disp.width), height(disp.height),
+			//screenDataWidth(disp.screenDataWidth), screenDataHeight(disp.screenDataHeight),
+			screenData(nullptr),
+			//isRedraw(disp.isRedraw.load()),
+			currentDisplayBrights(disp.currentDisplayBrights.load()),
+			screenTexture(disp.screenTexture) 
+		{
+			//resetSize();
+			rebuildScreen();
+		} 
+
+		EEmbDisplay& operator=(const EEmbDisplay& disp)
+		{
+			*static_cast<EEmbPeriph*>(this) = disp;
+
+			this->width = disp.width;
+			this->height = disp.height;
+			this->currentDisplayBrights = disp.currentDisplayBrights.load();
+			this->screenTexture = disp.screenTexture;
+			//this->resetSize();
+			this->rebuildScreen();
+
+			return *this;
+		}
+
 		void rebuildScreen() {
 
 			screenDataWidth = 1;
@@ -233,6 +313,10 @@ namespace EEmbSimulator {
 		virtual void drawGUI() override;
 	};
 
+	void to_json(nlohmann::json& j, const EEmbDisplay& info);
+	void from_json(const nlohmann::json& j, EEmbDisplay& info);
+
+
 	struct EEmbLED : EEmbPeriph {
 		uint8_t value;
 		VEC4 colorOn = { 1.0f, 0.0f, 0.0f, 0.8f };
@@ -242,4 +326,42 @@ namespace EEmbSimulator {
 		}
 		virtual void drawGUI() override;
 	};
+
+	void to_json(nlohmann::json& j, const EEmbLED& info);
+	void from_json(const nlohmann::json& j, EEmbLED& info);
+
+
+
+
+	struct EEmbDevice {
+		
+		std::string jsonPath;
+		std::string deviceName;
+
+		std::vector<EEmbImg> images;
+		std::vector<EEmbUI> UIs;
+		std::vector<EEmbAO> AOs;
+		std::vector<EEmbDO> DOs;
+		std::vector<MB_modbus_t> COMs;
+		std::vector<EEmbDisplay> displays;
+		std::vector<EEmbLED> LEDs;
+
+		EEmbDevice() {}
+
+		static bool BuildToJson(const std::string& path, const std::string& deviceName, std::list<std::shared_ptr<EEmbPeriph>>& periphs);
+		static bool LoadFromJson(EEmbDevice& device, const std::string& path, bool isResetToDefault);
+		bool saveToJson();
+		bool resetToDefault();
+
+		bool getPeriphs(std::list<std::shared_ptr<EEmbPeriph>>& periphs);
+		bool getPeriphs(std::list<EEmbPeriph*>& periphs);
+
+	};
+
+	void to_json(nlohmann::json& j, const EEmbDevice& info);
+	void from_json(const nlohmann::json& j, EEmbDevice& info);
+
+
 }
+
+

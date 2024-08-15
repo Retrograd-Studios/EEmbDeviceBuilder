@@ -43,6 +43,7 @@ namespace EEmbSimulator
 {
 
     std::list<std::shared_ptr<EEmbPeriph>> periphs;
+    // std::list<EEmbPeriph*> periphs;
 
     void framebuffer_size_callback(GLFWwindow *window, int width, int height);
     void mouse_callback(GLFWwindow *window, double xpos, double ypos);
@@ -85,6 +86,10 @@ namespace EEmbSimulator
     std::shared_ptr<EEmbPeriph> selectedElement = nullptr;
     std::shared_ptr<EEmbPeriph> movedElement = nullptr;
 
+    // EEmbPeriph* hoverElement = nullptr;
+    // EEmbPeriph* selectedElement = nullptr;
+    // EEmbPeriph* movedElement = nullptr;
+
     glm::vec4 selectedMove = glm::vec4(0.0f);
     glm::vec4 howerColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -107,6 +112,8 @@ namespace EEmbSimulator
     
 
     std::unordered_map<std::string, uint32_t> texturesMap;
+
+    EEmbDevice _device;
 
 
     void RecreateTexture(std::shared_ptr<EEmbDisplay> pDisp)
@@ -492,7 +499,7 @@ namespace EEmbSimulator
                 selectedMove.w = 0;
             }
 
-            if (nk_begin(ctx, "Menu", nk_rect(0, 0, 280, 200), 
+            if (nk_begin(ctx, "Menu", nk_rect(0, 0, 280, 280), 
                          NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR))
             {
 
@@ -522,7 +529,7 @@ namespace EEmbSimulator
                     else if (newElementType == PERIPH_TYPE_RS_485)
                     {
                         auto newElement0 = std::make_shared<MB_modbus_t>();
-                        newElement0->modbusInstance = std::make_unique<MBL_modbus_t>();
+                        //newElement0->modbusInstance = std::make_unique<MBL_modbus_t>();
                         newElement = newElement0;
                     }
                     else if (newElementType == PERIPH_TYPE_AO)
@@ -580,7 +587,7 @@ namespace EEmbSimulator
                 }
 
                 auto total_space = nk_window_get_content_region(ctx);
-                nk_layout_row_dynamic(ctx, total_space.h-70, 1);
+                nk_layout_row_dynamic(ctx, total_space.h-150, 1);
                 if ( nk_group_begin(ctx, "elements", NK_WINDOW_BORDER) )
                 {
 
@@ -607,15 +614,24 @@ namespace EEmbSimulator
                     nk_group_end(ctx);
                 }
 
-                nk_layout_row_dynamic(ctx, 25, 2);
+
+                nk_layout_row_dynamic(ctx, 25, 1);
+                nk_label(ctx, "DeviceName: ", NK_TEXT_ALIGN_LEFT);
+                char inputBuffer[256];
+                int32_t inputBufferSize = _device.deviceName.size();
+                auto prevSize = inputBufferSize;
+                memcpy(inputBuffer, _device.deviceName.c_str(), inputBufferSize+1);
+                nk_edit_string(ctx, NK_EDIT_FIELD, inputBuffer, &inputBufferSize, 256, nk_filter_default);
+                _device.deviceName = std::string(inputBuffer, inputBufferSize);
+
                 if (nk_button_label(ctx, "Build"))
                 {
-                    
+                    EEmbDevice::BuildToJson(SimPath, _device.deviceName, periphs);
                 }
-                if (nk_button_label(ctx, "Save"))
-                {
+                // if (nk_button_label(ctx, "Save"))
+                // {
                     
-                }
+                // }
             }
             nk_end(ctx);
 
@@ -847,11 +863,33 @@ namespace EEmbSimulator
     }
 
 
+    void clearTextures();
+
     void DragAndDropCallback(GLFWwindow* window, int count,const char* paths[])
     {
         for (auto i = 0; i < count; ++i)
         {
-            addTexture(paths[i]);
+            if (std::string(paths[i]).find(".json") != std::string::npos)
+            {
+                EEmbDevice::LoadFromJson(_device, paths[i], false);
+
+                clearTextures();
+                for (auto& img : _device.images)
+                {
+                    addTexture(img.imgPath.c_str());
+                }
+
+                for (auto& disp : _device.displays)
+                {
+                    glGenTextures(1, &disp.screenTexture);
+                }
+
+                _device.getPeriphs(periphs);
+            }
+            else
+            {
+                addTexture(paths[i]);
+            }
         }
     }
 
@@ -1095,7 +1133,7 @@ namespace EEmbSimulator
 			glDeleteTextures(1, &tex.second);
 		}
 	    texturesMap.clear();
-        addTexture((SimPath + "IS20C01D.png").c_str());
+        //addTexture((SimPath + "IS20C01D.png").c_str());
     }
 
 
