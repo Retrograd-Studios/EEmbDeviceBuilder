@@ -50,15 +50,18 @@ namespace EEmbSimulator {
 			return;
 		}
 
+        static uint32_t wX =  windowWidth-255;
+        static uint32_t wY =  100 + 315;
+
 
 		if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
-                             nk_rect(WINDOW_WIDTH-300, 320, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
+                             nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
         {
             //nk_layout_row_dynamic(ctx, 25, 2);
-            // nk_property_float(ctx, "x: ", 0, &selectedElement->targetRect.x, WINDOW_WIDTH, 1, .1f);
-            // nk_property_float(ctx, "y: ", 0, &selectedElement->targetRect.y, WINDOW_HEIGHT, 1, .1f);
-            // nk_property_float(ctx, "w: ", 0, &selectedElement->targetRect.w, WINDOW_WIDTH, 1, .1f);
-        	// nk_property_float(ctx, "h: ", 0, &selectedElement->targetRect.h, WINDOW_HEIGHT, 1, .1f);
+            // nk_property_float(ctx, "x: ", 0, &selectedElement->targetRect.x, windowWidth, 1, .1f);
+            // nk_property_float(ctx, "y: ", 0, &selectedElement->targetRect.y, windowHeight, 1, .1f);
+            // nk_property_float(ctx, "w: ", 0, &selectedElement->targetRect.w, windowWidth, 1, .1f);
+        	// nk_property_float(ctx, "h: ", 0, &selectedElement->targetRect.h, windowHeight, 1, .1f);
 
 			uint32_t imageId = 0;
 
@@ -100,8 +103,8 @@ namespace EEmbSimulator {
 				this->targetRect.w = width;
 				this->targetRect.h = height;
 
-				// this->targetRect.x = WINDOW_WIDTH / 2 - width / 2;
-				// this->targetRect.y = WINDOW_HEIGHT / 2 - height / 2;
+				// this->targetRect.x = windowWidth / 2 - width / 2;
+				// this->targetRect.y = windowHeight / 2 - height / 2;
 			}
 
 			if ( nk_button_label(ctx, "reset pos") )
@@ -113,13 +116,78 @@ namespace EEmbSimulator {
 				// this->targetRect.w = width;
 				// this->targetRect.h = height;
 
-				this->targetRect.x = WINDOW_WIDTH / 2 - this->targetRect.w / 2;
-				this->targetRect.y = WINDOW_HEIGHT / 2 - this->targetRect.h / 2;
+				this->targetRect.x = windowWidth / 2 - this->targetRect.w / 2;
+				this->targetRect.y = windowHeight / 2 - this->targetRect.h / 2;
 			}
         }
+        auto bounds = nk_window_get_bounds(ctx);
+        wX = bounds.x;
+        wY = bounds.y;
+        
         nk_end(ctx);
 
 	}
+
+
+
+    
+    void EEmbButton::drawGUI() {
+
+        if (selectedElement.get() == this)
+        {
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
+
+                static std::string buttonLabels[] = {
+                    "BUTTON_LEFT",
+                    "BUTTON_RIGHT",
+                    "BUTTON_DOWN",
+                    "BUTTON_UP",
+                    "BUTTON_ESC",
+                    "BUTTON_ENTER"
+                };
+
+				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
+                             nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
+                {
+
+                    nk_layout_row_dynamic(ctx, 25, 1);
+                    nk_label(ctx, "Button ID: ", NK_TEXT_LEFT);
+                    if (nk_combo_begin_label(ctx, buttonLabels[buttonId].c_str(), nk_vec2(nk_widget_width(ctx), 80)))
+					{
+						nk_layout_row_dynamic(ctx, 25, 1);
+						for (auto i = 0; i < BOTTON_COUNT; ++i)
+						{
+							if (nk_combo_item_label(ctx, buttonLabels[i].c_str(), NK_TEXT_ALIGN_CENTERED))
+							{
+								buttonId = i;
+							}
+						}
+						nk_combo_end(ctx);
+					}
+
+                    nk_label(ctx, this->state ? "state: pressed (true)" : "state: released (false)" , NK_TEXT_LEFT);
+                    
+
+                }
+                auto bounds = nk_window_get_bounds(ctx);
+                wX = bounds.x;
+                wY = bounds.y;
+                nk_end(ctx);
+
+
+            if (this->label.empty() || this->label == "BUTTON_")
+            {
+                this->label = "BUTTON_";
+                this->isShowMenu = false;
+                return;
+            }
+        }
+
+
+    }
+
+
 
 
 	void EEmbUI::drawGUI() 
@@ -136,8 +204,8 @@ namespace EEmbSimulator {
 
 		if (selectedElement.get() == this)
         {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  320;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
 
 				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
                              nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
@@ -177,14 +245,14 @@ namespace EEmbSimulator {
         auto x = this->hudRect.x == 0 ?  this->targetRect.x + 40 : this->hudRect.x;
         auto y = this->hudRect.y == 0 ?  this->targetRect.y + 40 : this->hudRect.y;
 
-        if ((x + w) > WINDOW_WIDTH)
+        if ((x + w) > windowWidth)
         {
-            x = WINDOW_WIDTH - w;
+            x = windowWidth - w;
         }
 
-        if ((y + h) > WINDOW_HEIGHT)
+        if ((y + h) > windowHeight)
         {
-            y = WINDOW_HEIGHT - h;
+            y = windowHeight - h;
         }
         
 
@@ -297,8 +365,8 @@ namespace EEmbSimulator {
 
 		if (selectedElement.get() == this)
         {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  320;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
 
 				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
                              nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
@@ -378,14 +446,14 @@ namespace EEmbSimulator {
         auto x = this->hudRect.x == 0 ?  this->targetRect.x + 40 : this->hudRect.x;
         auto y = this->hudRect.y == 0 ?  this->targetRect.y + 40 : this->hudRect.y;
 
-        if ((x + w) > WINDOW_WIDTH)
+        if ((x + w) > windowWidth)
         {
-            x = WINDOW_WIDTH - w;
+            x = windowWidth - w;
         }
 
-        if ((y + h) > WINDOW_HEIGHT)
+        if ((y + h) > windowHeight)
         {
-            y = WINDOW_HEIGHT - h;
+            y = windowHeight - h;
         }
         
 		
@@ -500,8 +568,8 @@ namespace EEmbSimulator {
 
         if (selectedElement.get() == this)
         {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  320;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
 
 				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
                              nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
@@ -532,14 +600,14 @@ namespace EEmbSimulator {
         auto x = this->hudRect.x == 0 ?  this->targetRect.x + 40 : this->hudRect.x;
         auto y = this->hudRect.y == 0 ?  this->targetRect.y + 40 : this->hudRect.y;
 
-        if ((x + w) > WINDOW_WIDTH)
+        if ((x + w) > windowWidth)
         {
-            x = WINDOW_WIDTH - w;
+            x = windowWidth - w;
         }
 
-        if ((y + h) > WINDOW_HEIGHT)
+        if ((y + h) > windowHeight)
         {
-            y = WINDOW_HEIGHT - h;
+            y = windowHeight - h;
         }
 		
 		if (this->label.empty() || this->label == "AO_")
@@ -580,8 +648,8 @@ namespace EEmbSimulator {
 
         if (selectedElement.get() == this)
         {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  320;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
 
 				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
                              nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
@@ -608,20 +676,20 @@ namespace EEmbSimulator {
         }
 
 
-        float w = this->hudRect.w != 0 ?  this->hudRect.w : 160;
-        float h = this->hudRect.h != 0 ?  this->hudRect.h : 130;
+        float w = this->hudRect.w != 0 ?  this->hudRect.w : 138;
+        float h = this->hudRect.h != 0 ?  this->hudRect.h : 77;
 
         auto x = this->hudRect.x == 0 ?  this->targetRect.x + 40 : this->hudRect.x;
         auto y = this->hudRect.y == 0 ?  this->targetRect.y + 40 : this->hudRect.y;
 
-        if ((x + w) > WINDOW_WIDTH)
+        if ((x + w) > windowWidth)
         {
-            x = WINDOW_WIDTH - w;
+            x = windowWidth - w;
         }
 
-        if ((y + h) > WINDOW_HEIGHT)
+        if ((y + h) > windowHeight)
         {
-            y = WINDOW_HEIGHT - h;
+            y = windowHeight - h;
         }
 		
 		if (this->label.empty() || this->label == "DO_")
@@ -669,8 +737,8 @@ namespace EEmbSimulator {
 
         if (selectedElement.get() == this)
         {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  320;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
 
 				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
                              nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
@@ -780,20 +848,20 @@ namespace EEmbSimulator {
         }
 
 
-        float w = this->hudRect.w != 0 ?  this->hudRect.w : 160;
-        float h = this->hudRect.h != 0 ?  this->hudRect.h : 130;
+        float w = this->hudRect.w != 0 ?  this->hudRect.w : 138;
+        float h = this->hudRect.h != 0 ?  this->hudRect.h : 77;
 
         auto x = this->hudRect.x == 0 ?  this->targetRect.x + 40 : this->hudRect.x;
         auto y = this->hudRect.y == 0 ?  this->targetRect.y + 40 : this->hudRect.y;
 
-        if ((x + w) > WINDOW_WIDTH)
+        if ((x + w) > windowWidth)
         {
-            x = WINDOW_WIDTH - w;
+            x = windowWidth - w;
         }
 
-        if ((y + h) > WINDOW_HEIGHT)
+        if ((y + h) > windowHeight)
         {
-            y = WINDOW_HEIGHT - h;
+            y = windowHeight - h;
         }
 		
 		if (this->label.empty() || this->label == "LED_")
@@ -847,8 +915,8 @@ namespace EEmbSimulator {
 
         if (selectedElement.get() == this)
         {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  320;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100 + 315;
 
 				if (nk_begin(ctx, typeList[selectedElement->typeId].c_str(),
                              nk_rect(wX, wY, 250, 250), NK_WINDOW_BORDER | NK_WINDOW_SCALABLE | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE))
@@ -958,6 +1026,7 @@ namespace EEmbSimulator {
         }
 
     }
+
 
 
 }

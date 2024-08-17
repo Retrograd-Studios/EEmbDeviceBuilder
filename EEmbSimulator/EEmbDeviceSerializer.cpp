@@ -159,6 +159,21 @@ namespace EEmbSimulator
 		j.at("colorOff").get_to(info.colorOff);
 	}
 
+	void to_json(nlohmann::json& j, const EEmbButton& info)
+	{
+		j = *static_cast<const EEmbPeriph *>(&info);
+		j["buttonId"] = info.buttonId;
+	}
+
+	void from_json(const nlohmann::json& j, EEmbButton& info)
+	{
+		*static_cast<EEmbPeriph *>(&info) = j;
+		j.at("buttonId").get_to(info.buttonId);
+	}
+
+
+
+
 	void to_json(nlohmann::json &j, const EEmbDevice &info)
 	{
 		j = nlohmann::json{
@@ -169,7 +184,8 @@ namespace EEmbSimulator
 			{"DOs", info.DOs},
 			{"COMs", info.COMs},
 			{"displays", info.displays},
-			{"LEDs", info.LEDs}};
+			{"LEDs", info.LEDs},
+			{"buttons", info.buttons}};
 	}
 
 	void from_json(const nlohmann::json &j, EEmbDevice &info)
@@ -182,6 +198,7 @@ namespace EEmbSimulator
 		j.at("COMs").get_to(info.COMs);
 		j.at("displays").get_to(info.displays);
 		j.at("LEDs").get_to(info.LEDs);
+		j.at("buttons").get_to(info.buttons);
 	}
 
 	std::string GetNormalizedPath(const std::string &path)
@@ -277,7 +294,7 @@ namespace EEmbSimulator
 
 		EEmbDevice device;
 		device.deviceName = deviceName;
-		device.jsonPath = path + "../artifacts/" + deviceName + "/Simulator";
+		device.jsonPath = GetNormalizedPath(path + "../artifacts/" + deviceName + "/Simulator");
 
 		if (!fs::exists(device.jsonPath))
 		{
@@ -336,6 +353,10 @@ namespace EEmbSimulator
 			else if (periph->typeId == PERIPH_TYPE_LED)
 			{
 				device.LEDs.push_back(*std::static_pointer_cast<EEmbLED>(periph));
+			}
+			else if (periph->typeId == PERIPH_TYPE_BUTTON)
+			{
+				device.buttons.push_back(*std::static_pointer_cast<EEmbButton>(periph));
 			}
 		}
 
@@ -495,6 +516,11 @@ namespace EEmbSimulator
 			periphs.push_back(std::make_shared<EEmbDisplay>(periph));
 		}
 
+		for (auto &periph : buttons)
+		{
+			periphs.push_back(std::make_shared<EEmbButton>(periph));
+		}
+
 		return true;
 	}
 
@@ -534,6 +560,11 @@ namespace EEmbSimulator
 		}
 
 		for (auto &periph : displays)
+		{
+			periphs.push_back(&periph);
+		}
+
+		for (auto &periph : buttons)
 		{
 			periphs.push_back(&periph);
 		}

@@ -23,11 +23,13 @@
 
 namespace EEmbSimulator {
 
-    #define WINDOW_WIDTH 1024
-    #define WINDOW_HEIGHT 768
+    #define WINDOW_WIDTH 1280
+    #define WINDOW_HEIGHT 800
 
     #define MAX_VERTEX_BUFFER 512 * 1024
     #define MAX_ELEMENT_BUFFER 128 * 1024
+
+    extern uint32_t windowWidth, windowHeight;
 
     void addTexture(const char* path);
 

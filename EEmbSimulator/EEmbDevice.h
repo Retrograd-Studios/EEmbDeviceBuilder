@@ -34,6 +34,7 @@ namespace EEmbSimulator {
 	enum PeriphTypeId {
 		PERIPH_TYPE_NONE = 0,
 		PERIPH_TYPE_IMG,
+		PERIPH_TYPE_BUTTON,
 		PERIPH_TYPE_UI,
 		PERIPH_TYPE_RS_485,
 		PERIPH_TYPE_AO,
@@ -331,6 +332,19 @@ namespace EEmbSimulator {
 	void from_json(const nlohmann::json& j, EEmbLED& info);
 
 
+	struct EEmbButton : EEmbPeriph {
+		uint8_t buttonId = BUTTON_ENTER;
+		uint8_t state;
+		EEmbButton() : EEmbPeriph(PERIPH_TYPE_BUTTON) {
+			this->targetHoverType = TARGET_HOVER_TYPE_CIRCLE;
+		}
+		virtual void drawGUI() override;
+	};
+
+	void to_json(nlohmann::json& j, const EEmbButton& info);
+	void from_json(const nlohmann::json& j, EEmbButton& info);
+
+
 
 
 	struct EEmbDevice {
@@ -345,8 +359,48 @@ namespace EEmbSimulator {
 		std::vector<MB_modbus_t> COMs;
 		std::vector<EEmbDisplay> displays;
 		std::vector<EEmbLED> LEDs;
+		std::vector<EEmbButton> buttons;
 
-		EEmbDevice() {}
+		std::atomic<uint32_t> btnsPressed;
+    	std::atomic<uint32_t> btnsReleased;
+
+		EEmbDevice() : btnsPressed(0), btnsReleased(0) {}
+
+
+		EEmbDevice(const EEmbDevice& dev) : btnsPressed(0), btnsReleased(0)
+		{
+			this->jsonPath = dev.jsonPath;
+			this->deviceName = dev.deviceName;
+
+			this->images = dev.images;
+			this->UIs = dev.UIs;
+			this->AOs = dev.AOs;
+			this->DOs = dev.DOs;
+			this->COMs = dev.COMs;
+			this->displays = dev.displays;
+			this->LEDs = dev.LEDs;
+			this->buttons = dev.buttons;
+
+		}
+
+		EEmbDevice& operator=(const EEmbDevice& dev)
+		{
+			this->jsonPath = dev.jsonPath;
+			this->deviceName = dev.deviceName;
+
+			this->images = dev.images;
+			this->UIs = dev.UIs;
+			this->AOs = dev.AOs;
+			this->DOs = dev.DOs;
+			this->COMs = dev.COMs;
+			this->displays = dev.displays;
+			this->LEDs = dev.LEDs;
+			this->buttons = dev.buttons;
+
+			this->btnsPressed.store(dev.btnsPressed);
+			this->btnsReleased.store(dev.btnsReleased);
+			return *this;
+		}
 
 		static bool BuildToJson(const std::string& path, const std::string& deviceName, std::list<std::shared_ptr<EEmbPeriph>>& periphs);
 		static bool LoadFromJson(EEmbDevice& device, const std::string& path, bool isResetToDefault);

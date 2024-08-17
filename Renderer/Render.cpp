@@ -60,6 +60,9 @@ namespace EEmbSimulator
     void cursor_position_callback(GLFWwindow *window, double x, double y);
     void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
+    uint32_t windowWidth, windowHeight;
+    bool IsWindowChanged = true;
+
     int cp_x;
     int cp_y;
     int offset_cpx;
@@ -100,6 +103,7 @@ namespace EEmbSimulator
 
     std::vector<std::string> typeList({"NONE",
                                        "IMG",
+                                       "Button",
                                        "UI",
                                        "RS-485",
                                        "AO",
@@ -173,7 +177,7 @@ namespace EEmbSimulator
         glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
         // glfwWindowHint(GLFW_MOUSE_PASSTHROUGH, GLFW_TRUE);
 
-        int count, windowWidth, windowHeight, monitorX, monitorY;
+        int count, monitorX, monitorY;
 
         // I am assuming that main monitor is in the 0 position
         GLFWmonitor **monitors = glfwGetMonitors(&count);
@@ -184,11 +188,12 @@ namespace EEmbSimulator
         windowHeight = WINDOW_HEIGHT; // static_cast<int>(videoMode->height * 0.5f);
 
         glfwGetMonitorPos(monitors[0], &monitorX, &monitorY);
-        // glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        //glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
         // glfw window creation
         // --------------------
-        GLFWwindow *window = glfwCreateWindow(windowWidth, windowHeight, "EEmbSimulator", NULL, NULL);
+        GLFWwindow *window = glfwCreateWindow(windowWidth, windowHeight, "EEmbSimulator v1.0.0", NULL, NULL);
         if (window == NULL)
         {
             std::cout << "Failed to create GLFW window" << std::endl;
@@ -206,8 +211,8 @@ namespace EEmbSimulator
 
         // Options
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        glfwSetWindowAttrib(window, GLFW_VISIBLE, GLFW_FALSE);
-        // glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
+        //glfwSetWindowAttrib(window, GLFW_VISIBLE, GLFW_FALSE);
+        //glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
 
         glfwSetWindowPos(window, monitorX + (videoMode->width - windowWidth) / 2,
                          monitorY + (videoMode->height - windowHeight) / 2);
@@ -327,7 +332,7 @@ namespace EEmbSimulator
         // ShaderOpenGL ourShader("model_loading.vs", "model_loading.fs");
 
         // create transformations
-        quadShader.Use();
+        
         glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 view0 = glm::mat4(1.0f);
@@ -338,17 +343,18 @@ namespace EEmbSimulator
         // model = glm::scale(model, glm::vec3(200.0f, 300.0f, 0.0f));
 
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
-        view = glm::scale(view, glm::vec3(WINDOW_WIDTH, WINDOW_HEIGHT, 0.0f));
+        view = glm::scale(view, glm::vec3(windowWidth, windowHeight, 0.0f));
 
-        plcView = view;
+        // plcView = view;
 
-        screenView = glm::mat4(1.f);
-        screenView = glm::translate(screenView, glm::vec3(175.0f, WINDOW_HEIGHT - 366.0f, 0.0f));
-        screenView = glm::scale(screenView, glm::vec3(201.f, 162, 0.0f));
+        // screenView = glm::mat4(1.f);
+        // screenView = glm::translate(screenView, glm::vec3(175.0f, windowHeight - 366.0f, 0.0f));
+        // screenView = glm::scale(screenView, glm::vec3(201.f, 162, 0.0f));
 
         // projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        projection = glm::ortho(0.0f, (float)WINDOW_WIDTH, 0.0f, (float)WINDOW_HEIGHT); //, -1.0f, 1.0f);// , 0.1f, 100.f);
+        projection = glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight); //, -1.0f, 1.0f);// , 0.1f, 100.f);
         // quadShader.setMat4("view", view);
+        quadShader.Use();
         quadShader.setMat4("model", model);
         quadShader.setMat4("projection", projection);
         quadShader.setVec4("color", {1.0f, 1.0f, 1.0f, 1.0f});
@@ -366,7 +372,7 @@ namespace EEmbSimulator
         // for (auto& target : targets)
         // {
         //     target.view = glm::translate(target.view,
-        //         glm::vec3(target.pos.x, WINDOW_HEIGHT - target.pos.y - target.size.y, 0.0f));
+        //         glm::vec3(target.pos.x, windowHeight - target.pos.y - target.size.y, 0.0f));
         //     target.view = glm::scale(target.view, glm::vec3(target.size.x, target.size.y, 0.0f));
         //     target.btnPos = it;
 
@@ -407,8 +413,8 @@ namespace EEmbSimulator
 
         struct nk_color table[NK_COLOR_COUNT];
         table[NK_COLOR_TEXT] = nk_rgba(210, 210, 210, 255);
-        table[NK_COLOR_WINDOW] = nk_rgba(57, 67, 71, 230);
-        table[NK_COLOR_HEADER] = nk_rgba(51, 51, 56, 230);
+        table[NK_COLOR_WINDOW] = nk_rgba(57, 67, 71, 245);
+        table[NK_COLOR_HEADER] = nk_rgba(51, 51, 56, 245);
         table[NK_COLOR_BORDER] = nk_rgba(46, 46, 46, 255);
         table[NK_COLOR_BUTTON] = nk_rgba(48, 83, 111, 255);
         table[NK_COLOR_BUTTON_HOVER] = nk_rgba(58, 93, 121, 255);
@@ -423,7 +429,7 @@ namespace EEmbSimulator
         table[NK_COLOR_SLIDER_CURSOR_HOVER] = nk_rgba(53, 88, 116, 255);
         table[NK_COLOR_SLIDER_CURSOR_ACTIVE] = nk_rgba(58, 93, 121, 255);
         table[NK_COLOR_PROPERTY] = nk_rgba(50, 58, 61, 255);
-        table[NK_COLOR_EDIT] = nk_rgba(50, 58, 61, 225);
+        table[NK_COLOR_EDIT] = nk_rgba(50, 58, 61, 245);
         table[NK_COLOR_EDIT_CURSOR] = nk_rgba(210, 210, 210, 255);
         table[NK_COLOR_COMBO] = nk_rgba(50, 58, 61, 255);
         table[NK_COLOR_CHART] = nk_rgba(50, 58, 61, 255);
@@ -438,6 +444,31 @@ namespace EEmbSimulator
 
         while (!glfwWindowShouldClose(window))
         {
+
+            if (IsWindowChanged)
+            {
+                IsWindowChanged = false;
+
+                model = glm::mat4(1.0f); 
+                view = glm::mat4(1.0f);
+                view0 = glm::mat4(1.0f);
+                projection = glm::mat4(1.0f);
+
+                model = glm::translate(model, glm::vec3(0.5f, 0.5f, 0.0f));
+
+                view = glm::translate(view, glm::vec3(0.0f, 0.0f, 0.0f));
+                view = glm::scale(view, glm::vec3(windowWidth, windowHeight, 0.0f));
+
+                projection = glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight); 
+
+                quadShader.Use();
+                quadShader.setMat4("model", model);
+                quadShader.setMat4("projection", projection);
+
+                quadShader2.Use();
+                quadShader2.setMat4("model", model);
+                quadShader2.setMat4("projection", projection);
+            }
 
             // SimulatorLoop();
             //  per-frame time logic
@@ -499,7 +530,121 @@ namespace EEmbSimulator
                 selectedMove.w = 0;
             }
 
-            if (nk_begin(ctx, "Menu", nk_rect(0, 0, 280, 280), 
+
+            if (nk_begin(ctx, "Menu2", nk_rect(windowWidth-205, 5, 200, 90), 
+                         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR))
+            {
+                // nk_layout_row_dynamic(ctx, 25, 3);
+                static float ratio[] = {0.25f, 0.45f, 0.1f, 0.1f, 0.1f};
+                nk_layout_row(ctx, NK_DYNAMIC, 25, 5, ratio);
+                //nk_spacer(ctx);
+                // nk_spacer(ctx);
+
+                auto elBoundId = 0;
+                auto elBounds = nk_widget_bounds(ctx);
+                if (nk_button_label(ctx, "vars"))
+                {
+
+                }
+                if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
+                {
+                    elBoundId = 1;
+                }
+
+
+                elBounds = nk_widget_bounds(ctx);
+                if (nk_button_label(ctx, "reset ROM"))
+                {
+
+                }
+                if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
+                {
+                    elBoundId = 2;
+                }
+                // if (nk_button_label(ctx, "expand all"))
+                // {
+
+                // }
+                // if (nk_button_label(ctx, "collapse all"))
+                // {
+
+                // }
+                
+                elBounds = nk_widget_bounds(ctx);
+                if (nk_button_symbol(ctx, NK_SYMBOL_X))
+				{
+					
+				}
+
+                if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
+                {
+                    elBoundId = 3;
+                    // nk_layout_space_begin(ctx, NK_STATIC, 0, 1);
+                    // nk_layout_space_push(ctx, { 0, 0, 100, 25 });
+                    // nk_tooltip(ctx, "Resets HUD to Default.");
+                    // nk_layout_space_end(ctx);
+                }
+                
+
+                elBounds = nk_widget_bounds(ctx);
+                if (nk_button_label(ctx, "^"))
+                {
+                    for (auto &periph : periphs)
+                    {
+                        periph->isShowMenu = true;
+                    }
+                }
+                if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
+                {
+                    elBoundId = 4;
+                }
+
+                elBounds = nk_widget_bounds(ctx);
+                if (nk_button_label(ctx, "v"))
+                {
+                    for (auto &periph : periphs)
+                    {
+                        periph->isShowMenu = false;
+                    }
+                }
+                if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
+                {
+                    elBoundId = 5;
+                }
+                
+
+                
+
+                if (elBoundId)
+                {
+                    static const char* tooltipLabels[] = {
+                        "show global variables",
+                        "resets Simulator ROM memory",
+                        "resets HUD to Default",
+                        "expand all HUDs",
+                        "collapse all HUDs"
+                    };
+                    nk_layout_row_dynamic(ctx, 25, 1);
+                    nk_label(ctx, tooltipLabels[elBoundId-1], NK_TEXT_ALIGN_CENTERED);
+                }
+                
+
+                // if (nk_button_symbol(ctx, NK_SYMBOL_RECT_SOLID))
+				// {
+					
+				// }
+                // if (nk_button_symbol(ctx, NK_SYMBOL_RECT_OUTLINE))
+				// {
+					
+				// }
+                // if (nk_button_symbol(ctx, NK_SYMBOL_MAX))
+				// {
+					
+				// }
+            }
+            nk_end(ctx);
+
+            if (nk_begin(ctx, "Menu", nk_rect(5, 5, 280, 280), 
                          NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR))
             {
 
@@ -553,10 +698,14 @@ namespace EEmbSimulator
                     {
                         newElement = std::make_shared<EEmbLED>();
                     }
+                    else if (newElementType == PERIPH_TYPE_BUTTON)
+                    {
+                        newElement = std::make_shared<EEmbButton>();
+                    }
 
                     periphs.push_back(newElement);
-                    newElement->targetRect.x = WINDOW_WIDTH / 2;
-                    newElement->targetRect.y = WINDOW_HEIGHT / 2;
+                    newElement->targetRect.x = windowWidth / 2;
+                    newElement->targetRect.y = windowHeight / 2;
 
                     selectedElement = periphs.back();
                 }
@@ -637,8 +786,8 @@ namespace EEmbSimulator
 
             if (selectedElement != nullptr)
             {
-                static uint32_t wX =  WINDOW_WIDTH-300;
-                static uint32_t wY =  0;
+                static uint32_t wX =  windowWidth-255;
+                static uint32_t wY =  100;
                 if (nk_begin(ctx, "Selected Element",
                              nk_rect(wX, wY, 250, 310), NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE))
                 {
@@ -647,10 +796,10 @@ namespace EEmbSimulator
                     nk_label(ctx, typeList[selectedElement->typeId].c_str(), NK_TEXT_ALIGN_CENTERED);
 
                     nk_layout_row_dynamic(ctx, 25, 2);
-                    nk_property_float(ctx, "x: ", 0, &selectedElement->targetRect.x, WINDOW_WIDTH, 1, .1f);
-                    nk_property_float(ctx, "y: ", 0, &selectedElement->targetRect.y, WINDOW_HEIGHT, 1, .1f);
-                    nk_property_float(ctx, "w: ", 0, &selectedElement->targetRect.w, WINDOW_WIDTH, 1, .1f);
-                    nk_property_float(ctx, "h: ", 0, &selectedElement->targetRect.h, WINDOW_HEIGHT, 1, .1f);
+                    nk_property_float(ctx, "x: ", 0, &selectedElement->targetRect.x, windowWidth, 1, .1f);
+                    nk_property_float(ctx, "y: ", 0, &selectedElement->targetRect.y, windowHeight, 1, .1f);
+                    nk_property_float(ctx, "w: ", 0, &selectedElement->targetRect.w, windowWidth, 1, .1f);
+                    nk_property_float(ctx, "h: ", 0, &selectedElement->targetRect.h, windowHeight, 1, .1f);
 
                     
 
@@ -683,10 +832,10 @@ namespace EEmbSimulator
                         auto y = selectedElement->labelRect.y == 0 ?  selectedElement->targetRect.y + 40 : selectedElement->labelRect.y;
 
                         nk_layout_row_dynamic(ctx, 25, 2);
-                        nk_property_float(ctx, "label x: ", 0, &x, WINDOW_WIDTH, 1.0f, 1.0f);
-                        nk_property_float(ctx, "label y: ", 0, &y, WINDOW_HEIGHT, 1.0f, 1.0f);
-                        nk_property_float(ctx, "label w: ", 0, &w, WINDOW_WIDTH, 1.0f, 1.0f);
-                        nk_property_float(ctx, "label h: ", 0, &h, WINDOW_HEIGHT, 1.0f, 1.0f);
+                        nk_property_float(ctx, "label x: ", 0, &x, windowWidth, 1.0f, 1.0f);
+                        nk_property_float(ctx, "label y: ", 0, &y, windowHeight, 1.0f, 1.0f);
+                        nk_property_float(ctx, "label w: ", 0, &w, windowWidth, 1.0f, 1.0f);
+                        nk_property_float(ctx, "label h: ", 0, &h, windowHeight, 1.0f, 1.0f);
 
                         selectedElement->labelRect.x = x;
                         selectedElement->labelRect.y = y;
@@ -708,7 +857,10 @@ namespace EEmbSimulator
             // render
             // ------
             // glClearColor(0.2f, 0.3f, 0.3f, 0.0f);
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            //glClearColor(0.17f, 0.23f, 0.33f, 0.95f);
+            glClearColor(0.17f, 0.23f, 0.33f, 0.7f);
+            //glClearColor(0.24f, 0.43f, 0.33f, 0.95f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnable(GL_BLEND);
             glEnable(GL_MULTISAMPLE);
@@ -723,13 +875,13 @@ namespace EEmbSimulator
             for (auto &periph : periphs)
             {
 
-                // auto modelView = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x, WINDOW_HEIGHT - periph->targetRect.x - periph->targetRect.h, 0.0f));
+                // auto modelView = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x, windowHeight - periph->targetRect.x - periph->targetRect.h, 0.0f));
                 // modelView = glm::scale(modelView, glm::vec3(periph->targetRect.w, periph->targetRect.h, 0.0f));
 
-                auto modelView = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x, WINDOW_HEIGHT - periph->targetRect.y - periph->targetRect.h, 0.0f));
+                auto modelView = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x, windowHeight - periph->targetRect.y - periph->targetRect.h, 0.0f));
                 modelView = glm::scale(modelView, glm::vec3(periph->targetRect.w, periph->targetRect.h, 0.0f));
 
-                if (periph->typeId < PERIPH_TYPE_UI)
+                if (periph->typeId < PERIPH_TYPE_BUTTON)
                 {
 
                     auto pImg = std::static_pointer_cast<EEmbImg>(periph);
@@ -737,6 +889,7 @@ namespace EEmbSimulator
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, texturesMap[pImg->imgPath]);
                     quadShader.Use();
+                    quadShader.setVec4("color", {1.0f, 1.0f, 1.0f, 1.0f});
                     quadShader.setMat4("view", modelView);
                     quadShader.setInt("texture0", 0);
                     quadShader.setVec2("texUV", { 1.0f, 1.0f });
@@ -754,33 +907,61 @@ namespace EEmbSimulator
                     quadShader2.Use();
                     quadShader2.setMat4("view", modelView);
                     quadShader2.setInt("figureType", (int)periph->targetHoverType);
-                    if (periph->typeId != PERIPH_TYPE_LED)
-                    {
-                        quadShader2.setVec4("color", periph == hoverElement ? howerColor : (periph == selectedElement ? glm::vec4(0.9f, 0.9f, 0.01f, 0.35f) : glm::vec4(0.12f, 0.0f, 0.0f, 0.1f)));
 
-                    }
-                    else
+                    if (periph->typeId == PERIPH_TYPE_LED)
                     {
                         auto pLed = std::static_pointer_cast<EEmbLED>(periph);
                         
 
-                        if (periph == selectedElement)
-                        {
-                            auto modelView2 = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x-1, WINDOW_HEIGHT - periph->targetRect.y - periph->targetRect.h - 1, 0.0f));
-                            modelView2 = glm::scale(modelView2, glm::vec3(periph->targetRect.w*1.1f, periph->targetRect.h*1.1f, 0.0f));
-                            quadShader2.setMat4("view", modelView2);
-                            quadShader2.setVec4("color",  pLed->value ? glm::vec4(1.0f-pLed->colorOn.x, 1.0f-pLed->colorOn.y, 1.0f-pLed->colorOn.w, 0.2f) :
-                             glm::vec4(1.0f-pLed->colorOff.x, 1.0f-pLed->colorOff.y, 1.0f-pLed->colorOff.w, 0.2f));
-                            quadShader2.setVec4("borderColor", periph == selectedElement ? glm::vec4(0.0f, 0.0f, 0.0f, 0.98f) : (periph == hoverElement ? glm::vec4(0.0f, 0.0f, 0.0f, 0.75f) : glm::vec4(0.0f, 0.0f, 0.0f, 0.45f)));
-                            glBindVertexArray(VAO);
-                            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+                        // if (periph == selectedElement)
+                        // {
+                        //     auto modelView2 = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x-1, windowHeight - periph->targetRect.y - periph->targetRect.h - 1, 0.0f));
+                        //     modelView2 = glm::scale(modelView2, glm::vec3(periph->targetRect.w*1.1f, periph->targetRect.h*1.1f, 0.0f));
+                        //     quadShader2.setMat4("view", modelView2);
+                        //     quadShader2.setVec4("color",  pLed->value ? glm::vec4(1.0f-pLed->colorOn.x, 1.0f-pLed->colorOn.y, 1.0f-pLed->colorOn.w, 0.2f) :
+                        //      glm::vec4(1.0f-pLed->colorOff.x, 1.0f-pLed->colorOff.y, 1.0f-pLed->colorOff.w, 0.2f));
+                        //     quadShader2.setVec4("borderColor", periph == selectedElement ? glm::vec4(0.0f, 0.0f, 0.0f, 0.98f) : (periph == hoverElement ? glm::vec4(0.0f, 0.0f, 0.0f, 0.75f) : glm::vec4(0.0f, 0.0f, 0.0f, 0.45f)));
+                        //     glBindVertexArray(VAO);
+                        //     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-                            quadShader2.setMat4("view", modelView);
-                        }
+                        //     quadShader2.setMat4("view", modelView);
+                        // }
 
                         quadShader2.setVec4("color", pLed->value ? glm::vec4(pLed->colorOn.x, pLed->colorOn.y, pLed->colorOn.w, pLed->colorOn.h) 
                             : glm::vec4(pLed->colorOff.x, pLed->colorOff.y, pLed->colorOff.w, pLed->colorOff.h));
 
+                        glBindVertexArray(VAO);
+                            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+                        auto modelView2 = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x+periph->targetRect.w*0.25f, 
+                            windowHeight - periph->targetRect.y - periph->targetRect.h + periph->targetRect.h*0.25f, 0.0f));
+                        modelView2 = glm::scale(modelView2, glm::vec3(periph->targetRect.w*0.5f, periph->targetRect.h*0.5f, 0.0f));
+                        quadShader2.setMat4("view", modelView2);
+
+                        quadShader2.setVec4("color", periph == hoverElement ? howerColor : (periph == selectedElement ? glm::vec4(0.9f, 0.9f, 0.01f, 0.35f) : glm::vec4(0.12f, 0.0f, 0.0f, 0.1f)));
+
+
+
+                    }
+                    else if (periph->typeId == PERIPH_TYPE_DO)
+                    {
+                        auto pDo = std::static_pointer_cast<EEmbDO>(periph);
+
+                        quadShader2.setVec4("color", pDo->value ? glm::vec4(0.5f, 1.f, 0.5f, 0.75f) : glm::vec4(0.45f, 0.05f, 0.0f, 0.75f));
+                        glBindVertexArray(VAO);
+                        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+                        auto modelView2 = glm::translate(glm::mat4(1.f), glm::vec3(periph->targetRect.x+periph->targetRect.w*0.25f, 
+                            windowHeight - periph->targetRect.y - periph->targetRect.h + periph->targetRect.h*0.25f, 0.0f));
+                        modelView2 = glm::scale(modelView2, glm::vec3(periph->targetRect.w*0.5f, periph->targetRect.h*0.5f, 0.0f));
+                        quadShader2.setMat4("view", modelView2);
+
+                        quadShader2.setVec4("color", periph == hoverElement ? howerColor : (periph == selectedElement ? glm::vec4(0.9f, 0.9f, 0.01f, 0.35f) : glm::vec4(0.12f, 0.0f, 0.0f, 0.1f)));
+                    }
+                    else
+                    {
+                        quadShader2.setVec4("color", periph == hoverElement ? howerColor : (periph == selectedElement ? glm::vec4(0.9f, 0.9f, 0.01f, 0.35f) : glm::vec4(0.12f, 0.0f, 0.0f, 0.1f)));
                     }
                     
                     quadShader2.setVec4("borderColor", periph == selectedElement ? glm::vec4(0.0f, 0.0f, 0.0f, 0.98f) : (periph == hoverElement ? glm::vec4(0.0f, 0.0f, 0.0f, 0.75f) : glm::vec4(0.0f, 0.0f, 0.0f, 0.45f)));
@@ -953,7 +1134,7 @@ namespace EEmbSimulator
     void cursor_position_callback(GLFWwindow *window, double x, double y)
     {
 
-        // y = WINDOW_HEIGHT - y;
+        // y = windowHeight - y;
 
         if (buttonEvent == 1)
         {
@@ -1014,7 +1195,7 @@ namespace EEmbSimulator
             double x, y;
             glfwGetCursorPos(window, &x, &y);
 
-            // y = WINDOW_HEIGHT - y;
+            // y = windowHeight - y;
 
             fx = floor(x);
             fy = floor(y);
@@ -1055,6 +1236,12 @@ namespace EEmbSimulator
                     movedElement = selectedElement;
 
                 }
+                if (selectedElement->typeId == PERIPH_TYPE_BUTTON)
+                {
+                    auto pBtn = std::static_pointer_cast<EEmbButton>(selectedElement); 
+                    pBtn->state = 1;
+                    _device.btnsPressed.store( _device.btnsPressed | (1 << pBtn->buttonId) );
+                }
             }
             else
             {
@@ -1067,6 +1254,13 @@ namespace EEmbSimulator
 
         if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
         {
+
+            if (selectedElement != nullptr && selectedElement->typeId == PERIPH_TYPE_BUTTON)
+            {
+                auto pBtn = std::static_pointer_cast<EEmbButton>(selectedElement); 
+                pBtn->state = 0;
+                _device.btnsReleased.store( _device.btnsReleased | (1 << pBtn->buttonId) );
+            }
 
             if (hoverElement != nullptr)
             {
@@ -1085,6 +1279,8 @@ namespace EEmbSimulator
             //     // }
             // }
 
+            
+
             movedElement = nullptr;
             selectedMove.x = 0;
             selectedMove.y = 0;
@@ -1099,6 +1295,9 @@ namespace EEmbSimulator
     {
         // make sure the viewport matches the new window dimensions; note that width and
         // height will be significantly larger than specified on retina displays.
+        windowWidth = width;
+        windowHeight = height;
+        IsWindowChanged = true;
         glViewport(0, 0, width, height);
     }
 
