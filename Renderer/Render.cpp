@@ -544,7 +544,15 @@ namespace EEmbSimulator
                 auto elBounds = nk_widget_bounds(ctx);
                 if (nk_button_label(ctx, "vars"))
                 {
-
+                    if (_device.simVisableDbgWins != EEMB_SIM_ALL_DBG_WINS_MASK)
+                    {
+                        _device.simVisableDbgWins = EEMB_SIM_ALL_DBG_WINS_MASK;
+                    }
+                    else
+                    {
+                        _device.simVisableDbgWins = 0;
+                    }
+                    
                 }
                 if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
                 {
@@ -573,7 +581,10 @@ namespace EEmbSimulator
                 elBounds = nk_widget_bounds(ctx);
                 if (nk_button_symbol(ctx, NK_SYMBOL_X))
 				{
-					
+                    if (!_device.jsonPath.empty())
+                    {
+                        EEmbDevice::LoadFromJson(_device, _device.jsonPath, true);
+                    }
 				}
 
                 if (nk_input_is_mouse_hovering_rect(&ctx->input, elBounds))
@@ -644,7 +655,8 @@ namespace EEmbSimulator
             }
             nk_end(ctx);
 
-            if (nk_begin(ctx, "Menu", nk_rect(5, 5, 280, 280), 
+            //if (nk_begin(ctx, "Menu", nk_rect(5, 5, 280, 280), 
+            if (nk_begin(ctx, "Menu", nk_rect(5, 5, 320, 480), 
                          NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_NO_SCROLLBAR))
             {
 

@@ -13,6 +13,9 @@
 
 namespace EEmbSimulator {
 
+	#define WINDOW_WIDTH 1280
+    #define WINDOW_HEIGHT 800
+
 	
 	enum BTNS_POS {
 		BUTTON_LEFT = 0,
@@ -345,6 +348,13 @@ namespace EEmbSimulator {
 	void from_json(const nlohmann::json& j, EEmbButton& info);
 
 
+	enum EEmbSimulatorVisableDbgWinsId {
+		SIM_DBG_WIN_MB_REGS_ID = 0,
+		SIM_DBG_WIN_GLOB_VARS_ID,
+		SIM_DBG_WIN_REM_MODULES_ID
+	};
+
+	#define EEMB_SIM_ALL_DBG_WINS_MASK ( 7 )
 
 
 	struct EEmbDevice {
@@ -364,6 +374,17 @@ namespace EEmbSimulator {
 		std::atomic<uint32_t> btnsPressed;
     	std::atomic<uint32_t> btnsReleased;
 
+		std::list<std::string> globVarsFavs;
+		std::list<std::string> mbRegsFavs;
+
+		VEC4 mbRegsWin = {.x = 5, .y = 5, .w = 320, .h = 480};
+		//VEC4 globVarsWin = {.x = WINDOW_WIDTH-255, .y = 100 + 315, .w = 250, .h = 310};
+		VEC4 globVarsWin = {.x = WINDOW_WIDTH-255, .y = 100, .w = 250, .h = 310};
+		VEC4 remoteModulesWin = {.x = WINDOW_WIDTH-255, .y = 100 + 315 + 310, .w = 250, .h = 310};
+
+		uint32_t simVisableDbgWins;
+
+
 		EEmbDevice() : btnsPressed(0), btnsReleased(0) {}
 
 
@@ -380,6 +401,15 @@ namespace EEmbSimulator {
 			this->displays = dev.displays;
 			this->LEDs = dev.LEDs;
 			this->buttons = dev.buttons;
+
+			globVarsFavs = dev.globVarsFavs;
+			mbRegsFavs = dev.mbRegsFavs;
+
+			globVarsWin = dev.globVarsWin;
+			mbRegsWin = dev.mbRegsWin;
+			remoteModulesWin = dev.remoteModulesWin;
+
+			simVisableDbgWins = dev.simVisableDbgWins;
 
 		}
 
@@ -399,6 +429,16 @@ namespace EEmbSimulator {
 
 			this->btnsPressed.store(dev.btnsPressed);
 			this->btnsReleased.store(dev.btnsReleased);
+
+			globVarsFavs = dev.globVarsFavs;
+			mbRegsFavs = dev.mbRegsFavs;
+
+			globVarsWin = dev.globVarsWin;
+			mbRegsWin = dev.mbRegsWin;
+			remoteModulesWin = dev.remoteModulesWin;
+
+			simVisableDbgWins = dev.simVisableDbgWins;
+
 			return *this;
 		}
 
