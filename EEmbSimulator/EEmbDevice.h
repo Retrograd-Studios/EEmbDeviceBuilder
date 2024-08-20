@@ -10,6 +10,8 @@
 
 #include <nlohmann/json.hpp>
 
+#define IS_EEMB_DEVICE_BUILDER
+
 
 namespace EEmbSimulator {
 
@@ -156,7 +158,7 @@ namespace EEmbSimulator {
 	void from_json(const nlohmann::json& j, EEmbImg& info);
 
 	struct EEmbUI : EEmbPeriph {
-		float rawVal;
+		float rawVal = 0.0f;
 		uint32_t max = 1000;
 		uint32_t min = 0;
 		uint32_t val = 0;
@@ -378,11 +380,13 @@ namespace EEmbSimulator {
 		std::list<std::string> mbRegsFavs;
 
 		VEC4 mbRegsWin = {.x = 5, .y = 5, .w = 320, .h = 480};
+		VEC4 uiWin = {.x = 5, .y = 485, .w = 320, .h = 310};
 		//VEC4 globVarsWin = {.x = WINDOW_WIDTH-255, .y = 100 + 315, .w = 250, .h = 310};
 		VEC4 globVarsWin = {.x = WINDOW_WIDTH-255, .y = 100, .w = 250, .h = 310};
 		VEC4 remoteModulesWin = {.x = WINDOW_WIDTH-255, .y = 100 + 315 + 310, .w = 250, .h = 310};
 
-		uint32_t simVisableDbgWins;
+		uint32_t simVisableDbgWins = 0;
+		bool isShowUiWin = false;
 
 
 		EEmbDevice() : btnsPressed(0), btnsReleased(0) {}
@@ -401,6 +405,9 @@ namespace EEmbSimulator {
 			this->displays = dev.displays;
 			this->LEDs = dev.LEDs;
 			this->buttons = dev.buttons;
+
+			uiWin = dev.uiWin;
+			isShowUiWin = dev.isShowUiWin;
 
 			globVarsFavs = dev.globVarsFavs;
 			mbRegsFavs = dev.mbRegsFavs;
@@ -429,6 +436,9 @@ namespace EEmbSimulator {
 
 			this->btnsPressed.store(dev.btnsPressed);
 			this->btnsReleased.store(dev.btnsReleased);
+
+			uiWin = dev.uiWin;
+			isShowUiWin = dev.isShowUiWin;
 
 			globVarsFavs = dev.globVarsFavs;
 			mbRegsFavs = dev.mbRegsFavs;

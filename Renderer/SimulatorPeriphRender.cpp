@@ -35,6 +35,16 @@ namespace EEmbSimulator {
 
 	extern struct nk_context* ctx;
 
+#ifdef IS_EEMB_DEVICE_BUILDER
+
+    extern std::list<std::shared_ptr<EEmbPeriph>> periphs;
+
+#else // IS_EEMB_DEVICE_BUILDER
+
+    extern std::list<EEmbPeriph*> periphs;
+
+#endif //IS_EEMB_DEVICE_BUILDER
+
 
 
 	// void EEmbPeriph::drawGUI(uint32_t id) 
@@ -233,10 +243,20 @@ namespace EEmbSimulator {
         }
 
 
-		if (!this->isShowMenu)
-        {
-            return;
-        }
+		// if (!this->isShowMenu)
+        // {
+        //     return;
+        // }
+
+        if (this->label.empty() || this->label == "UI_")
+		{
+			this->label = "UI_";
+			this->isShowMenu = false;
+			//return;
+		}
+
+
+        return;
 
 
         float w = this->hudRect.w != 0 ?  this->hudRect.w : 160;
@@ -262,12 +282,7 @@ namespace EEmbSimulator {
             "Input (C): "
         };
 		
-		if (this->label.empty() || this->label == "UI_")
-		{
-			this->label = "UI_";
-			this->isShowMenu = false;
-			return;
-		}
+		
 
         if (nk_begin_titled(ctx, std::to_string((uint64_t)this->label.c_str()).c_str(), this->label.c_str(),
             nk_rect(x, y, w, h),
@@ -287,7 +302,7 @@ namespace EEmbSimulator {
                 nk_layout_row_dynamic(ctx, 25, 2);
                 isInput = nk_option_label(ctx, "on", isInput);
                 isInput = !nk_option_label(ctx, "off", !isInput);
-                this->rawVal = isInput ? 20.0 : 0.0;
+                this->rawVal = isInput ? 20.0f : 0.0f;
             }
             else if (this->mode == 1)
             {
@@ -1028,6 +1043,195 @@ namespace EEmbSimulator {
     }
 
 
+    extern EEmbDevice _device;
+
+    void Render::drawGUI() {
+
+        static auto prevSelect = selectedElement;
+
+        auto isScroll = false;
+
+        if (prevSelect != selectedElement)
+        {
+            if (selectedElement != nullptr && selectedElement->typeId == PERIPH_TYPE_UI)
+            {
+                prevSelect = selectedElement;
+                isScroll = true;
+                //_device.isShowUiWin = true;
+            }
+            else
+            {
+                prevSelect = nullptr;
+            }
+        }
+        
+        if (!_device.isShowUiWin)
+        {
+            return;
+        }
+
+        static const std::string modeLabels[] = {
+            "DI",
+            "4-20",
+            "NTC10K"
+        };
+
+        static const std::string inputLabels[] = {
+            "#Input (0/1): ",
+            "#Input (mA): ",
+            "#Input (C): "
+        };
+
+
+        if (nk_begin(ctx, "Periphs", nk_rect(_device.uiWin.x, _device.uiWin.y, _device.uiWin.w, _device.uiWin.h), 
+                         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_CLOSABLE))
+        {
+
+            auto total_space = nk_window_get_content_region(ctx);
+            
+            nk_layout_row_dynamic(ctx, 25, 1);
+            //enum nk_collapse_states collapseState = NK_MAXIMIZED;
+            //nk_tree_state_push()
+            if (nk_tree_push(ctx, NK_TREE_NODE, "UIs", NK_MAXIMIZED))
+            {
+                
+                nk_layout_row_dynamic(ctx, total_space.h-70, 1);
+                if (nk_group_begin(ctx, "inputs", 0))
+                {
+                    static float ratio[] = {0.2f, 0.2f, 0.6f};
+                    nk_layout_row(ctx, NK_DYNAMIC, 25, 4, ratio);
+
+                    //nk_spacer(ctx);
+                    nk_label(ctx, "#", NK_TEXT_LEFT);
+                    nk_label(ctx, "mode", NK_TEXT_LEFT);
+                    nk_label(ctx, "input", NK_TEXT_LEFT);
+                    //nk_label(ctx, "value", NK_TEXT_LEFT);
+
+                    auto i = 0;
+                    auto yoffset = 0;
+                    for (auto& periph0 : periphs)
+                    {
+
+                        if (periph0->typeId != PERIPH_TYPE_UI)
+                        {
+                            continue;
+                        }
+
+                        auto periph = std::static_pointer_cast<EEmbUI>(periph0);
+
+                        nk_bool isSelected = periph == selectedElement;
+                        if (isSelected)
+                        {
+                            yoffset = 70*i;
+                            // auto xoffset0 = 0;
+                            // auto yoffset0 = 0;
+                            // nk_group_get_scroll(ctx, "inputs", (uint32_t*)&xoffset0, (uint32_t*)&yoffset0);
+                            // std::cerr << "xo: " << xoffset0 << "; yo" << yoffset0 << " <=> " << yoffset << "\n"; 
+                        }
+
+                        nk_layout_row_dynamic(ctx, 70, 1);
+                        if (nk_group_begin(ctx, "#di_inputs_grp", NK_WINDOW_NO_SCROLLBAR | NK_WINDOW_BORDER))
+                        {
+
+                            static float ratio[] = {0.2f, 0.2f, 0.6f};
+                            nk_layout_row(ctx, NK_DYNAMIC, 25, 4, ratio);
+
+                            
+
+                            isSelected = nk_checkbox_label(ctx, periph->label.c_str(), &isSelected);
+                            if (isSelected)
+                            {
+                                selectedElement = periph;
+                            }
+
+
+                            nk_label(ctx, modeLabels[periph->mode].c_str(), NK_TEXT_LEFT);
+
+                            if (periph->mode == 0)
+                            {
+                                bool isInput = periph->rawVal == 0.0f ? false : true;
+                            
+                                //nk_label(ctx, inputLabels[periph->mode].c_str(), NK_TEXT_LEFT);
+
+                                if (nk_group_begin(ctx, "#di_inputs", NK_WINDOW_NO_SCROLLBAR))
+                                {
+                                    nk_layout_row_dynamic(ctx, 25, 4);
+                                    nk_spacer(ctx);
+
+                                    if (nk_option_label(ctx, "on", isInput)) isInput = true;
+                                    if (nk_option_label(ctx, "off", !isInput)) isInput = false;
+                                    nk_spacer(ctx);
+
+                                    periph->rawVal = isInput ? 20.0f : 0.0f;
+                                    nk_group_end(ctx);
+                                }
+                                
+
+                                // nk_layout_space_begin(ctx, NK_DYNAMIC, 25, 2);
+                                //     isInput = nk_option_label(ctx, "on", isInput);
+                                //     isInput = !nk_option_label(ctx, "off", !isInput);
+                                //     periph->rawVal = isInput ? 20.0 : 0.0;
+                                // nk_layout_space_end(ctx);
+
+                                static float ratio[] = {0.2f, 0.8f};
+                                nk_layout_row(ctx, NK_DYNAMIC, 25, 2, ratio);
+                                nk_spacer(ctx);
+                                nk_label(ctx, periph->val ? "value: true" : "value: false", NK_TEXT_LEFT);
+                            }
+                            else if (periph->mode == 1)
+                            {
+                                periph->rawVal = nk_propertyf(ctx, inputLabels[periph->mode].c_str(), 
+                                    3.5f, periph->rawVal, 20.5f, 0.1f, 1.0f);
+
+                                static float ratio[] = {0.2f, 0.8f};
+                                nk_layout_row(ctx, NK_DYNAMIC, 25, 2, ratio);
+                                nk_spacer(ctx);
+                                nk_label(ctx, ("value: " +std::to_string(periph->val)).c_str(), NK_TEXT_LEFT);
+                            }
+                            else if (periph->mode == 2)
+                            {
+                                periph->rawVal = nk_propertyf(ctx, inputLabels[periph->mode].c_str(),
+                                    -50.0f, periph->rawVal, 100.0f, 0.1f, 1.0f);
+
+                                static float ratio[] = {0.2f, 0.8f};
+                                nk_layout_row(ctx, NK_DYNAMIC, 25, 2, ratio);
+                                nk_spacer(ctx);
+                                nk_label(ctx, ("value: " +std::to_string(periph->val)).c_str(), NK_TEXT_LEFT);
+                            }
+
+                            nk_layout_row_dynamic(ctx, 3, 1);
+                            nk_label(ctx, "____________________________________", NK_TEXT_CENTERED);
+
+                            nk_group_end(ctx);
+                        }
+
+                        ++i;
+                    }
+
+                    nk_group_end(ctx);
+
+                    if (isScroll)
+                    {
+                        nk_group_set_scroll(ctx, "inputs", 0, yoffset);
+                    }
+
+                }
+
+                nk_tree_pop(ctx);
+            }
+
+        }
+        else
+        {
+            _device.isShowUiWin = false;
+        }
+        auto bounds = nk_window_get_bounds(ctx);
+        _device.uiWin.x = bounds.x;
+        _device.uiWin.y = bounds.y;
+        _device.uiWin.w = bounds.w;
+        _device.uiWin.h = bounds.h;
+        nk_end(ctx);
+    }
 
 }
 

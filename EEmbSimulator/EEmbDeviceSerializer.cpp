@@ -185,7 +185,19 @@ namespace EEmbSimulator
 			{"COMs", info.COMs},
 			{"displays", info.displays},
 			{"LEDs", info.LEDs},
-			{"buttons", info.buttons}};
+			{"buttons", info.buttons},
+
+			{"globVarsFavs", info.globVarsFavs},
+			{"mbRegsFavs", info.mbRegsFavs},
+
+			{"mbRegsWin", info.mbRegsWin},
+			{"uiWin", info.uiWin},
+			{"globVarsWin", info.globVarsWin},
+			{"remoteModulesWin", info.remoteModulesWin},
+
+			{"simVisableDbgWins", info.simVisableDbgWins},
+			{"isShowUiWin", info.isShowUiWin}
+		};
 	}
 
 	void from_json(const nlohmann::json &j, EEmbDevice &info)
@@ -199,6 +211,17 @@ namespace EEmbSimulator
 		j.at("displays").get_to(info.displays);
 		j.at("LEDs").get_to(info.LEDs);
 		j.at("buttons").get_to(info.buttons);
+
+		j.at("globVarsFavs").get_to(info.globVarsFavs);
+		j.at("mbRegsFavs").get_to(info.mbRegsFavs);
+
+		j.at("mbRegsWin").get_to(info.mbRegsWin);
+		j.at("uiWin").get_to(info.uiWin);
+		j.at("globVarsWin").get_to(info.globVarsWin);
+		j.at("remoteModulesWin").get_to(info.remoteModulesWin);
+
+		j.at("simVisableDbgWins").get_to(info.simVisableDbgWins);
+		j.at("isShowUiWin").get_to(info.isShowUiWin);
 	}
 
 	std::string GetNormalizedPath(const std::string &path)
@@ -364,7 +387,7 @@ namespace EEmbSimulator
 
 		nlohmann::json j0 = device;
 		std::ofstream ofile(device.jsonPath);
-		ofile << j0;
+		ofile << std::setw(4) << j0;
 		ofile.flush();
 		ofile.close();
 
@@ -399,60 +422,38 @@ namespace EEmbSimulator
 			periph.imgPath = GetNormalizedPath(device.jsonPath + "/../" + extractFileName(periph.imgPath));
 		}
 
-		// for (auto &periph : periphs)
-		// {
-		// 	periph->isEditLabel = false;
-		// 	if (periph->typeId == PERIPH_TYPE_NONE)
-		// 	{
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_IMG)
-		// 	{
-		// 		auto pImg = std::static_pointer_cast<EEmbImg>(periph);
+		for (auto &periph : device.COMs)
+		{
+			periph.selectedPort = 0;
+		}
 
-		// 		if (!fs::exists(pImg->imgPath))
-		// 		{
-		// 			std::cerr << "Error: File '" << pImg->imgPath << "' is not found!\n";
-		// 			return false;
-		// 		}
+		for (auto &periph : device.UIs)
+		{
+			periph.max = 0xFFF;
+			periph.min = 0;
+			periph.offset = 0;
+			periph.mode = (EEmbUIMode) 0;
+		}
 
-		// 		auto artifactPath =  device.jsonPath + extractFileName(pImg->imgPath);
-		// 		if (artifactPath != pImg->imgPath)
-		// 		{
-		// 			if (fs::exists(artifactPath))
-		// 			{
-		// 				fs::remove(artifactPath);
-		// 			}
+		for (auto &periph : device.DOs)
+		{
+			periph.value = 0;
+		}
 
-		// 			fs::copy_file(pImg->imgPath, artifactPath);
-		// 		}
-		// 		device.images.push_back(*pImg);
-		// 		device.images.back().imgPath = extractFileName(pImg->imgPath);
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_UI)
-		// 	{
-		// 		device.UIs.push_back(*std::static_pointer_cast<EEmbUI>(periph));
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_RS_485)
-		// 	{
-		// 		device.COMs.push_back(*std::static_pointer_cast<MB_modbus_t>(periph));
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_AO)
-		// 	{
-		// 		device.AOs.push_back(*std::static_pointer_cast<EEmbAO>(periph));
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_DO)
-		// 	{
-		// 		device.DOs.push_back(*std::static_pointer_cast<EEmbDO>(periph));
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_DISPLAY)
-		// 	{
-		// 		device.displays.push_back(*std::static_pointer_cast<EEmbDisplay>(periph));
-		// 	}
-		// 	else if (periph->typeId == PERIPH_TYPE_LED)
-		// 	{
-		// 		device.LEDs.push_back(*std::static_pointer_cast<EEmbLED>(periph));
-		// 	}
-		// }
+		for (auto &periph : device.AOs)
+		{
+			periph.value = 0;
+		}
+
+		for (auto &periph : device.LEDs)
+		{
+			periph.value = 0;
+		}
+
+		for (auto &periph : device.buttons)
+		{
+			periph.state = 0;
+		}
 
 		return true;
 	}

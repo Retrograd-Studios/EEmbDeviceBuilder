@@ -1029,6 +1029,8 @@ namespace EEmbSimulator
                 }
             }
 
+            drawGUI();
+
             nk_glfw3_render(NK_ANTI_ALIASING_ON, MAX_VERTEX_BUFFER, MAX_ELEMENT_BUFFER);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -1279,6 +1281,11 @@ namespace EEmbSimulator
                 howerColor = glm::vec4(0.35f, 0.75f, 0.1f, 0.75f);
                 selectedElement = hoverElement;
                 selectedElement->isShowMenu = true;
+
+                if (selectedElement->typeId == PERIPH_TYPE_UI)
+                {
+                    _device.isShowUiWin = true;
+                }
             }
 
             // if (currentTarget != nullptr)
@@ -1324,6 +1331,12 @@ namespace EEmbSimulator
     void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
     {
         // std::cerr << "off: " << xoffset << " : " << yoffset << "\n";
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        {
+            yoffset *= 10;
+        }
+
         if (selectedElement != nullptr && selectedElement == hoverElement)
         {
             // std::cerr << "off: " << xoffset << " : " << yoffset << "\n";

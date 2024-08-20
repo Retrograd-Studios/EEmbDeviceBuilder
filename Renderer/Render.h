@@ -38,6 +38,7 @@ namespace EEmbSimulator {
         std::atomic<bool> isRunning;
         Render() : isRunning(true) {}
         int run();
+        void drawGUI();
         //void RecreateTexture(const uint8_t* data);
     private:
         unsigned int screenTexture;
