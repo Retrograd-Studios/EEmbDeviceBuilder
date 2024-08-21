@@ -87,8 +87,8 @@
             "hudRect": {
                 "h": 286.0,
                 "w": 170.0,
-                "x": 128.0,
-                "y": 387.0
+                "x": 322.0,
+                "y": 245.0
             },
             "isEditLabel": false,
             "isShowMenu": false,
@@ -113,8 +113,8 @@
             "hudRect": {
                 "h": 287.0,
                 "w": 169.0,
-                "x": 286.0,
-                "y": 168.0
+                "x": 497.0,
+                "y": 245.0
             },
             "isEditLabel": false,
             "isShowMenu": false,
@@ -294,7 +294,122 @@
             "value": 0
         }
     ],
-    "LEDs": [],
+    "LEDs": [
+        {
+            "colorOff": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.04621848464012146,
+                "y": 0.25
+            },
+            "colorOn": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.18487393856048584,
+                "y": 1.0
+            },
+            "hudRect": {
+                "h": 77.0,
+                "w": 160.0,
+                "x": 692.0,
+                "y": 273.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "LED GREEN (LED_1)",
+            "labelRect": {
+                "h": 25.0,
+                "w": 128.0,
+                "x": 889.0,
+                "y": 322.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 859.0,
+                "y": 345.0
+            },
+            "typeId": 7,
+            "value": 0
+        },
+        {
+            "colorOff": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.25,
+                "y": 0.0
+            },
+            "colorOn": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 1.0,
+                "y": 0.0
+            },
+            "hudRect": {
+                "h": 77.0,
+                "w": 159.0,
+                "x": 693.0,
+                "y": 353.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "LED RED (LED_2)",
+            "labelRect": {
+                "h": 25.0,
+                "w": 120.0,
+                "x": 889.0,
+                "y": 357.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 860.0,
+                "y": 380.0
+            },
+            "typeId": 7,
+            "value": 0
+        },
+        {
+            "colorOff": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.24789917469024658,
+                "y": 0.25
+            },
+            "colorOn": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 1.0,
+                "y": 0.8067227005958557
+            },
+            "hudRect": {
+                "h": 77.0,
+                "w": 159.0,
+                "x": 693.0,
+                "y": 433.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "LED YELLOW (LED_3)",
+            "labelRect": {
+                "h": 25.0,
+                "w": 133.0,
+                "x": 889.0,
+                "y": 396.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 859.0,
+                "y": 417.0
+            },
+            "typeId": 7,
+            "value": 0
+        }
+    ],
     "UIs": [
         {
             "hudRect": {
@@ -312,7 +427,7 @@
                 "x": 442.0,
                 "y": 153.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -343,7 +458,7 @@
                 "x": 493.0,
                 "y": 153.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -374,7 +489,7 @@
                 "x": 518.0,
                 "y": 152.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -405,7 +520,7 @@
                 "x": 558.0,
                 "y": 153.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -436,7 +551,7 @@
                 "x": 639.0,
                 "y": 150.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -467,7 +582,7 @@
                 "x": 678.0,
                 "y": 150.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -498,7 +613,7 @@
                 "x": 727.0,
                 "y": 155.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -529,7 +644,7 @@
                 "x": 760.0,
                 "y": 152.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -560,7 +675,7 @@
                 "x": 786.0,
                 "y": 153.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -591,7 +706,7 @@
                 "x": 827.0,
                 "y": 153.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -622,7 +737,7 @@
                 "x": 860.0,
                 "y": 151.0
             },
-            "max": 1000,
+            "max": 4095,
             "min": 0,
             "mode": 0,
             "offset": 0,
@@ -653,179 +768,21 @@
             "labelRect": {
                 "h": 26.0,
                 "w": 100.0,
-                "x": 896.0,
-                "y": 268.0
+                "x": 887.0,
+                "y": 492.0
             },
             "targetHoverType": 2,
             "targetRect": {
-                "h": 53.0,
-                "w": 53.0,
-                "x": 913.0,
-                "y": 299.0
-            },
-            "typeId": 2
-        },
-        {
-            "buttonId": 4,
-            "hudRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "isEditLabel": false,
-            "isShowMenu": false,
-            "label": "BUTTON ESC",
-            "labelRect": {
-                "h": 25.0,
-                "w": 100.0,
-                "x": 756.0,
-                "y": 268.0
-            },
-            "targetHoverType": 2,
-            "targetRect": {
-                "h": 53.0,
-                "w": 53.0,
-                "x": 771.0,
-                "y": 299.0
-            },
-            "typeId": 2
-        },
-        {
-            "buttonId": 3,
-            "hudRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "isEditLabel": false,
-            "isShowMenu": false,
-            "label": "BUTTON UP",
-            "labelRect": {
-                "h": 25.0,
-                "w": 100.0,
-                "x": 828.0,
-                "y": 319.0
-            },
-            "targetHoverType": 2,
-            "targetRect": {
-                "h": 53.0,
-                "w": 53.0,
-                "x": 842.0,
-                "y": 356.0
-            },
-            "typeId": 2
-        },
-        {
-            "buttonId": 2,
-            "hudRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "isEditLabel": false,
-            "isShowMenu": false,
-            "label": "BUTTON DOWN",
-            "labelRect": {
-                "h": 25.0,
-                "w": 100.0,
-                "x": 826.0,
-                "y": 437.0
-            },
-            "targetHoverType": 2,
-            "targetRect": {
-                "h": 53.0,
-                "w": 53.0,
-                "x": 842.0,
-                "y": 469.0
-            },
-            "typeId": 2
-        },
-        {
-            "buttonId": 0,
-            "hudRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "isEditLabel": false,
-            "isShowMenu": false,
-            "label": "BUTTON LEFT",
-            "labelRect": {
-                "h": 25.0,
-                "w": 100.0,
-                "x": 748.0,
-                "y": 384.0
-            },
-            "targetHoverType": 2,
-            "targetRect": {
-                "h": 53.0,
-                "w": 53.0,
-                "x": 771.0,
-                "y": 412.0
-            },
-            "typeId": 2
-        },
-        {
-            "buttonId": 1,
-            "hudRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "isEditLabel": false,
-            "isShowMenu": false,
-            "label": "BUTTON RIGHT",
-            "labelRect": {
-                "h": 25.0,
-                "w": 100.0,
-                "x": 896.0,
-                "y": 383.0
-            },
-            "targetHoverType": 2,
-            "targetRect": {
-                "h": 53.0,
-                "w": 53.0,
-                "x": 912.0,
-                "y": 412.0
+                "h": 40.0,
+                "w": 40.0,
+                "x": 855.0,
+                "y": 451.0
             },
             "typeId": 2
         }
     ],
-    "deviceName": "M72OD20R",
-    "displays": [
-        {
-            "height": 128,
-            "hudRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "isEditLabel": false,
-            "isShowMenu": false,
-            "label": "",
-            "labelRect": {
-                "h": 0.0,
-                "w": 0.0,
-                "x": 0.0,
-                "y": 0.0
-            },
-            "targetHoverType": 1,
-            "targetRect": {
-                "h": 200.0,
-                "w": 250.0,
-                "x": 462.0,
-                "y": 300.0
-            },
-            "typeId": 8,
-            "width": 160
-        }
-    ],
+    "deviceName": "M72OB20R",
+    "displays": [],
     "globVarsFavs": [],
     "images": [
         {
@@ -835,7 +792,7 @@
                 "x": 0.0,
                 "y": 0.0
             },
-            "imgPath": "M72OD20R.png",
+            "imgPath": "M72OB20R.png",
             "isEditLabel": false,
             "isShowMenu": false,
             "label": "",

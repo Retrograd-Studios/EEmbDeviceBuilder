@@ -379,10 +379,10 @@ namespace EEmbSimulator {
 		std::list<std::string> globVarsFavs;
 		std::list<std::string> mbRegsFavs;
 
-		VEC4 mbRegsWin = {.x = 5, .y = 5, .w = 320, .h = 480};
-		VEC4 uiWin = {.x = 5, .y = 485, .w = 320, .h = 310};
+		VEC4 mbRegsWin = {.x = 5, .y = 5, .w = 480, .h = 600};
+		VEC4 uiWin = {.x = 5, .y = 345, .w = 380, .h = 450};
 		//VEC4 globVarsWin = {.x = WINDOW_WIDTH-255, .y = 100 + 315, .w = 250, .h = 310};
-		VEC4 globVarsWin = {.x = WINDOW_WIDTH-255, .y = 100, .w = 250, .h = 310};
+		VEC4 globVarsWin = {.x = WINDOW_WIDTH-385, .y = 100, .w = 380, .h = 500};
 		VEC4 remoteModulesWin = {.x = WINDOW_WIDTH-255, .y = 100 + 315 + 310, .w = 250, .h = 310};
 
 		uint32_t simVisableDbgWins = 0;

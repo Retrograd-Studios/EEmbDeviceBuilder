@@ -598,12 +598,6 @@
         }
     ],
     "globVarsFavs": [],
-    "globVarsWin": {
-        "h": 310.0,
-        "w": 250.0,
-        "x": 1025.0,
-        "y": 100.0
-    },
     "images": [
         {
             "hudRect": {
@@ -632,11 +626,17 @@
             "typeId": 1
         }
     ],
-    "isShowUiWin": false,
+    "globVarsWin": {
+        "h": 500.0,
+        "w": 380.0,
+        "x": 895.0,
+        "y": 100.0
+    },
+	"isShowUiWin": false,
     "mbRegsFavs": [],
     "mbRegsWin": {
-        "h": 480.0,
-        "w": 320.0,
+        "h": 600.0,
+        "w": 480.0,
         "x": 5.0,
         "y": 5.0
     },
@@ -648,9 +648,9 @@
     },
     "simVisableDbgWins": 0,
     "uiWin": {
-        "h": 310.0,
-        "w": 320.0,
+        "h": 450.0,
+        "w": 380.0,
         "x": 5.0,
-        "y": 485.0
+        "y": 345.0
     }
 }
