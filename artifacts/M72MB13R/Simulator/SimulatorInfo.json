@@ -1,0 +1,613 @@
+{
+    "AOs": [
+        {
+            "hudRect": {
+                "h": 74.0,
+                "w": 135.0,
+                "x": 886.0,
+                "y": 19.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "AO_1",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 529.0,
+                "y": 138.0
+            },
+            "output": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 539.0,
+                "y": 100.0
+            },
+            "typeId": 5,
+            "value": 0
+        },
+        {
+            "hudRect": {
+                "h": 74.0,
+                "w": 136.0,
+                "x": 884.0,
+                "y": 98.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "AO_2",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 434.0,
+                "y": 133.0
+            },
+            "output": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 466.0,
+                "y": 100.0
+            },
+            "typeId": 5,
+            "value": 0
+        }
+    ],
+    "COMs": [
+        {
+            "hudRect": {
+                "h": 286.0,
+                "w": 170.0,
+                "x": 295.0,
+                "y": 378.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "RS-485_COM1",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 477.0,
+                "y": 616.0
+            },
+            "periphPortNum": 0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 29.0,
+                "w": 29.0,
+                "x": 468.0,
+                "y": 645.0
+            },
+            "typeId": 4
+        }
+    ],
+    "DOs": [
+        {
+            "hudRect": {
+                "h": 77.0,
+                "w": 138.0,
+                "x": 308.0,
+                "y": 18.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "DO_1",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 838.0,
+                "y": 132.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 824.0,
+                "y": 100.0
+            },
+            "typeId": 6,
+            "value": 0
+        },
+        {
+            "hudRect": {
+                "h": 77.0,
+                "w": 138.0,
+                "x": 449.0,
+                "y": 18.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "DO_2",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 771.0,
+                "y": 135.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 753.0,
+                "y": 101.0
+            },
+            "typeId": 6,
+            "value": 0
+        },
+        {
+            "hudRect": {
+                "h": 77.0,
+                "w": 138.0,
+                "x": 592.0,
+                "y": 18.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "DO_3",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 695.0,
+                "y": 140.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 683.0,
+                "y": 100.0
+            },
+            "typeId": 6,
+            "value": 0
+        },
+        {
+            "hudRect": {
+                "h": 77.0,
+                "w": 138.0,
+                "x": 738.0,
+                "y": 18.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "DO_4",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 594.0,
+                "y": 137.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 608.0,
+                "y": 100.0
+            },
+            "typeId": 6,
+            "value": 0
+        }
+    ],
+    "LEDs": [
+        {
+            "colorOff": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.04621848464012146,
+                "y": 0.25
+            },
+            "colorOn": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.3361344337463379,
+                "y": 1.0
+            },
+            "hudRect": {
+                "h": 77.0,
+                "w": 159.0,
+                "x": 619.0,
+                "y": 259.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "LED GREEN (LED_1)",
+            "labelRect": {
+                "h": 25.0,
+                "w": 128.0,
+                "x": 817.0,
+                "y": 335.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 31.0,
+                "w": 31.0,
+                "x": 779.0,
+                "y": 334.0
+            },
+            "typeId": 7,
+            "value": 0
+        },
+        {
+            "colorOff": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.25,
+                "y": 0.0
+            },
+            "colorOn": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 1.0,
+                "y": 0.0
+            },
+            "hudRect": {
+                "h": 77.0,
+                "w": 156.0,
+                "x": 619.0,
+                "y": 341.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "LED_RED (LED_2)",
+            "labelRect": {
+                "h": 25.0,
+                "w": 114.0,
+                "x": 819.0,
+                "y": 370.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 31.0,
+                "w": 31.0,
+                "x": 780.0,
+                "y": 368.0
+            },
+            "typeId": 7,
+            "value": 0
+        },
+        {
+            "colorOff": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.2352941334247589,
+                "y": 0.25
+            },
+            "colorOn": {
+                "h": 0.800000011920929,
+                "w": 0.0,
+                "x": 0.9411765336990356,
+                "y": 1.0
+            },
+            "hudRect": {
+                "h": 85.0,
+                "w": 156.0,
+                "x": 618.0,
+                "y": 423.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "LED_YELLOW (LED_3)",
+            "labelRect": {
+                "h": 25.0,
+                "w": 135.0,
+                "x": 822.0,
+                "y": 408.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 33.0,
+                "w": 33.0,
+                "x": 778.0,
+                "y": 403.0
+            },
+            "typeId": 7,
+            "value": 0
+        }
+    ],
+    "UIs": [
+        {
+            "hudRect": {
+                "h": 132.0,
+                "w": 175.0,
+                "x": 30.0,
+                "y": 666.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "UI_1",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 619.0,
+                "y": 617.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 611.0,
+                "y": 645.0
+            },
+            "typeId": 3,
+            "val": 0
+        },
+        {
+            "hudRect": {
+                "h": 130.0,
+                "w": 173.0,
+                "x": 208.0,
+                "y": 666.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "UI_2",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 662.0,
+                "y": 618.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 646.0,
+                "y": 645.0
+            },
+            "typeId": 3,
+            "val": 0
+        },
+        {
+            "hudRect": {
+                "h": 130.0,
+                "w": 172.0,
+                "x": 383.0,
+                "y": 666.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "UI_3",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 696.0,
+                "y": 616.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 682.0,
+                "y": 644.0
+            },
+            "typeId": 3,
+            "val": 0
+        },
+        {
+            "hudRect": {
+                "h": 130.0,
+                "w": 171.0,
+                "x": 557.0,
+                "y": 667.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "UI_4",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 732.0,
+                "y": 617.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 718.0,
+                "y": 645.0
+            },
+            "typeId": 3,
+            "val": 0
+        },
+        {
+            "hudRect": {
+                "h": 130.0,
+                "w": 174.0,
+                "x": 730.0,
+                "y": 667.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "UI_5",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 766.0,
+                "y": 616.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 753.0,
+                "y": 645.0
+            },
+            "typeId": 3,
+            "val": 0
+        },
+        {
+            "hudRect": {
+                "h": 130.0,
+                "w": 174.0,
+                "x": 905.0,
+                "y": 667.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": false,
+            "label": "UI_6",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 801.0,
+                "y": 619.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 790.0,
+                "y": 645.0
+            },
+            "typeId": 3,
+            "val": 0
+        },
+        {
+            "hudRect": {
+                "h": 132.0,
+                "w": 176.0,
+                "x": 1082.0,
+                "y": 667.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "UI_7",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 839.0,
+                "y": 615.0
+            },
+            "max": 4095,
+            "min": 0,
+            "mode": 0,
+            "offset": 0,
+            "rawVal": 0.0,
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 30.0,
+                "w": 30.0,
+                "x": 826.0,
+                "y": 645.0
+            },
+            "typeId": 3,
+            "val": 0
+        }
+    ],
+    "buttons": [
+        {
+            "buttonId": 5,
+            "hudRect": {
+                "h": 0.0,
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0
+            },
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "BUTTON ENTER",
+            "labelRect": {
+                "h": 26.0,
+                "w": 100.0,
+                "x": 821.0,
+                "y": 478.0
+            },
+            "targetHoverType": 2,
+            "targetRect": {
+                "h": 40.0,
+                "w": 40.0,
+                "x": 775.0,
+                "y": 443.0
+            },
+            "typeId": 2
+        }
+    ],
+    "deviceName": "M72MB13R",
+    "displays": [],
+    "globVarsFavs": [],
+    "globVarsWin": {
+        "h": 500.0,
+        "w": 380.0,
+        "x": 895.0,
+        "y": 100.0
+    },
+    "images": [
+        {
+            "hudRect": {
+                "h": 0.0,
+                "w": 0.0,
+                "x": 0.0,
+                "y": 0.0
+            },
+            "imgPath": "M72MB13R.png",
+            "isEditLabel": false,
+            "isShowMenu": true,
+            "label": "label",
+            "labelRect": {
+                "h": 25.0,
+                "w": 100.0,
+                "x": 959.0,
+                "y": 444.0
+            },
+            "targetHoverType": 0,
+            "targetRect": {
+                "h": 711.0,
+                "w": 711.0,
+                "x": 283.5,
+                "y": 44.5
+            },
+            "typeId": 1
+        }
+    ],
+    "isShowUiWin": false,
+    "mbRegsFavs": [],
+    "mbRegsWin": {
+        "h": 600.0,
+        "w": 480.0,
+        "x": 5.0,
+        "y": 5.0
+    },
+    "remoteModulesWin": {
+        "h": 310.0,
+        "w": 250.0,
+        "x": 1025.0,
+        "y": 725.0
+    },
+    "simVisableDbgWins": 0,
+    "uiWin": {
+        "h": 450.0,
+        "w": 380.0,
+        "x": 5.0,
+        "y": 345.0
+    }
+}

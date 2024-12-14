@@ -1373,7 +1373,13 @@ namespace EEmbSimulator
         glGenTextures(1, &textureID);
 
         int width, height, nrComponents;
-        unsigned char *data = SOIL_load_image(path, &width, &height, &nrComponents, SOIL_LOAD_RGBA);
+        unsigned char *data = SOIL_load_image(path, &width, &height, &nrComponents, SOIL_LOAD_AUTO);// SOIL_LOAD_RGBA);
+
+        // if (width == 326)
+        // {
+            // height *= 2;
+        // }
+
         if (data)
         {
             GLenum format = GL_RGBA;
